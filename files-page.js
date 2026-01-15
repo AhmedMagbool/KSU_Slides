@@ -260,43 +260,83 @@ async function fetchFileData(courseCode, folderKey, fileId) {
   return snap.exists() ? snap.val() : null;
 }
 
-window.previewFile = function previewFile(dataUrl, name) {
+function isIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function isPhoneLike() {
+  // تقريب: شاشة صغيرة = جوال
+  return Math.min(window.innerWidth, window.innerHeight) <= 768;
+}
+
+function dataUrlByteSize(dataUrl) {
+  // حساب تقريبي لحجم base64
+  if (!dataUrl || !dataUrl.includes(",")) return 0;
+  const b64 = dataUrl.split(",")[1] || "";
+  const padding = (b64.match(/=*$/) || [""])[0].length;
+  return Math.floor((b64.length * 3) / 4) - padding;
+}
+
+function mimeFromDataUrl(dataUrl) {
+  const s = String(dataUrl || "");
+  const i = s.indexOf(";");
+  if (!s.startsWith("data:") || i === -1) return "";
+  return s.slice(5, i);
+}
+
+async function shareOrSaveIOS(dataUrl, name) {
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  const fileName = name || "file";
+  const file = new File([blob], fileName, { type: blob.type });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({ files: [file], title: fileName });
+    return true;
+  }
+  return false;
+}
+
+// ====== PREVIEW ======
+window.previewFile = async function previewFile(dataUrl, name) {
   if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
 
-  const mime = String(dataUrl).slice(5, String(dataUrl).indexOf(";")) || "";
+  const mime = mimeFromDataUrl(dataUrl);
+  const sizeBytes = dataUrlByteSize(dataUrl);
 
-  if (mime.includes("pdf") || mime.startsWith("image/")) {
-    window.location.href = dataUrl; // نفس التبويب
-  } else {
-    window.downloadFile(dataUrl, name);
+  // نعرض فقط PDF/Images. غيرها تحميل
+  const canPreview = mime.includes("pdf") || mime.startsWith("image/");
+
+  // Threshold للجوال (عدّلها لو تبغى)
+  const HEAVY_PHONE_MB = 4.5; // فوق 4.5MB على الجوال: لا نعاين، نخليه تحميل
+  const isHeavyForPhone = isPhoneLike() && (sizeBytes / (1024 * 1024)) >= HEAVY_PHONE_MB;
+
+  // 1) iPad: عاين دائمًا (قدر الإمكان) بدون popup
+  // 2) جوال + ثقيل: تحويل لتحميل/مشاركة
+  if (!canPreview || isHeavyForPhone) {
+    return window.downloadFile(dataUrl, name);
   }
+
+  // فتح بنفس التبويب (بدون window.open) -> ما يطلب تفعيل popups
+  window.location.href = dataUrl;
 };
 
-
-
-
+// ====== DOWNLOAD ======
 window.downloadFile = async function downloadFile(dataUrl, name) {
   if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
 
-  try {
-    const res = await fetch(dataUrl);
-    const blob = await res.blob();
-    const fileName = name || "file";
-
-    if (navigator.canShare) {
-      const file = new File([blob], fileName, { type: blob.type });
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: fileName });
-        return;
-      }
+  // iOS: الأفضل "Share" عشان يحفظ في Files
+  if (isIOS()) {
+    try {
+      const ok = await shareOrSaveIOS(dataUrl, name);
+      if (ok) return;
+    } catch (e) {
+      console.error(e);
     }
-
-    // fallback: افتح في نفس التبويب
-    window.location.href = dataUrl;
-  } catch (e) {
-    console.error(e);
-    window.location.href = dataUrl;
   }
+
+  // fallback: افتح في نفس التبويب وخله ينزل من الـ viewer
+  window.location.href = dataUrl;
 };
 
 
