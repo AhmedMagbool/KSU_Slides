@@ -1,0 +1,428 @@
+/* Course Header Section */
+.course-header-section {
+  background: linear-gradient(135deg, var(--surface), var(--background));
+  padding: 2rem 0 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  transition: all 0.3s;
+  font-family: "Cairo", sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.back-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateX(4px);
+}
+
+.course-header-info {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.course-icon-large {
+  width: 80px;
+  height: 80px;
+  background: var(--gradient-primary);
+  border-radius: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+}
+
+.course-code-large {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.course-name-large {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.course-description-large {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* Files Section */
+.files-section {
+  padding: 3rem 0 4rem;
+}
+
+.files-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.file-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.3s;
+}
+
+.file-item:hover {
+  border-color: var(--primary);
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.file-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--surface-light);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.file-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--primary);
+}
+
+.file-details {
+  flex: 1;
+}
+
+.file-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.file-meta {
+  display: flex;
+  gap: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.file-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-icon {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover {
+  background: var(--surface-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-download {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.btn-download:hover {
+  background: var(--primary-dark);
+}
+
+/* File Type Colors */
+.file-icon.pdf {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.file-icon.pdf svg {
+  color: #ef4444;
+}
+
+.file-icon.doc {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.file-icon.doc svg {
+  color: #3b82f6;
+}
+
+.file-icon.ppt {
+  background: rgba(249, 115, 22, 0.1);
+}
+
+.file-icon.ppt svg {
+  color: #f97316;
+}
+
+.file-icon.zip {
+  background: rgba(168, 85, 247, 0.1);
+}
+
+.file-icon.zip svg {
+  color: #a855f7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .course-header-info {
+    flex-direction: column;
+  }
+
+  .course-name-large {
+    font-size: 1.75rem;
+  }
+
+  .file-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .file-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .btn-icon {
+    flex: 1;
+  }
+}
+/* =========================
+   Mobile layout like screenshot
+   ========================= */
+
+/* زر الهمبرجر */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+/* تفعيل مظهر موبايل */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  /* Navbar */
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-menu {
+    display: none;            /* نخفيها افتراضيًا */
+    position: absolute;
+    top: 70px;
+    right: 1rem;
+    left: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.75rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 999;
+  }
+
+  .nav-menu.open {
+    display: flex;            /* تظهر لما نضغط همبرجر */
+  }
+
+  .nav-link {
+    padding: 0.75rem 0.75rem;
+    border-radius: 10px;
+  }
+
+  .nav-link.active::after {
+    display: none;            /* خط active تحت الرابط مو حلو للموبايل */
+  }
+
+  .nav-link.active {
+    background: rgba(102, 126, 234, 0.12);
+    color: var(--primary);
+  }
+
+  /* Hero */
+  .hero-section {
+    padding: 2.25rem 0 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Search bar مثل الصورة: input + زر */
+  .search-box {
+    flex-direction: row;
+    border-radius: 0.9rem;
+  }
+
+  .search-input {
+    padding: 0.9rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .search-btn {
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  /* Courses grid = عمود واحد */
+  .courses-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* الكرت أنحف */
+  .course-card {
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+  }
+
+  /* عنوان المادة بالوسط زي الصورة */
+  .course-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  /* اخفِ الأيقونة الكبيرة (لو تبغى شكل زي الصورة تمامًا) */
+  .course-icon {
+    display: none;
+  }
+
+  .course-code {
+    font-size: 1.3rem;
+  }
+
+  .course-name {
+    font-size: 0.95rem;
+  }
+
+  /* stats وسط */
+  .course-stats {
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  /* الأزرار جنب بعض (مو تحت بعض) */
+  .course-actions {
+    flex-direction: row !important;
+    gap: 0.75rem;
+  }
+
+  .btn,
+  .course-actions .browse-btn,
+  .course-actions .download-btn {
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+    border-radius: 0.9rem;
+  }
+}
+
+/* موبايل صغير جدًا */
+@media (max-width: 420px) {
+  .search-btn span {
+    display: none; /* لو الزر طويل عندك */
+  }
+
+  .course-code {
+    font-size: 1.2rem;
+  }
+
+  .btn,
+  .course-actions .browse-btn,
+  .course-actions .download-btn {
+    font-size: 0.9rem;
+    padding: 0.8rem 0.9rem;
+  }
+}
+
+.site-footer{
+  margin-top: 3rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.footer-credit{
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: .2px;
+  opacity: .9;
+  transition: .2s;
+}
+
+.footer-credit:hover{
+  color: var(--primary);
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

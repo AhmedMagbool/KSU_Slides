@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniCourse</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+      <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+              
+
+                  <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <line x1="3" y1="6" x2="21" y2="6"></line>
+    <line x1="3" y1="12" x2="21" y2="12"></line>
+    <line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</button>
+
+
+                <span class="brand-name"><a href="./index.html">UniCourse</a></span>
+
+              
+
+
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link  active">المواد</a></li>
+                <li><a href="./teachers.html" class="nav-link">الأساتذة</a></li>
+                <!-- Added admin panel link -->
+                <li><a href="admin.html" class="nav-link" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">لوحة الإدارة</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1 class="hero-title">اكتشف مواد الكلية</h1>
+                <p class="hero-subtitle">وصول سريع لجميع المواد وملفاتها الدراسية</p>
+                
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن المادة برمزها أو اسمها...">
+                    <button id="searchBtn" class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        بحث
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="courses-section">
+            <div class="container">
+                <!-- Updated section title -->
+                <div class="section-header">
+                    <h2 class="section-title">مواد الإعداد العام</h2>
+                    <p class="section-subtitle">المواد الأساسية والمتطلبات العامة</p>
+                </div>
+                
+                <div id="generalCoursesGrid" class="courses-grid">
+                    <!-- General courses will be loaded here -->
+                </div>
+
+                <!-- Added Computer Science courses section -->
+                <div class="section-header" style="margin-top: 4rem;">
+                    <h2 class="section-title">مواد علوم الحاسب</h2>
+                    <p class="section-subtitle">المواد التخصصية في علوم الحاسب</p>
+                </div>
+                
+                <div id="csCoursesGrid" class="courses-grid">
+                    <!-- Computer Science courses will be loaded here -->
+                </div>
+
+                <!-- Added Information Systems courses section -->
+                <div class="section-header" style="margin-top: 4rem;">
+                    <h2 class="section-title">مواد نظم المعلومات</h2>
+                    <p class="section-subtitle">المواد التخصصية في نظم المعلومات</p>
+                </div>
+                
+                <div id="isCoursesGrid" class="courses-grid">
+                    <!-- Information Systems courses will be loaded here -->
+                </div>
+
+
+                  <div class="section-header" style="margin-top: 4rem;">
+                    <h2 class="section-title">مواد السلم</h2>
+                    <p class="section-subtitle">المواد الاساسية في السلم</p>
+                </div>
+                
+                <div id="islamicCoursesGrid" class="courses-grid">
+                    <!-- islamicCourses  will be loaded here -->
+                </div>
+
+
+                
+                 <div class="section-header" style="margin-top: 4rem;">
+                    <h2 class="section-title">مواد الادارة</h2>
+                    <p class="section-subtitle">المواد المطلوبة في ادارة الاعمال</p>
+                </div>
+                
+                <div id="managementCoursesGrid" class="courses-grid">
+                    <!-- management courses will be loaded here -->
+                </div>
+            </div>
+
+
+        </section>
+    </main>
+
+ <footer class="site-footer">
+  <a class="footer-credit" href="https://github.com/AhmedMagbool" target="_blank" rel="noopener">
+    Developer: Ahmed Magbool
+  </a>
+</footer>
+
+
+<script type="module" src="script.js"></script>
+</body>
+</html>

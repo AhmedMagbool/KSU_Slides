@@ -1,0 +1,713 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap");
+
+:root {
+  --primary: #667eea;
+  --primary-dark: #5568d3;
+  --secondary: #764ba2;
+  --accent: #f093fb;
+  --background: #0f172a;
+  --surface: #1e293b;
+  --surface-light: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border: #334155;
+  --success: #10b981;
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-card: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Cairo", sans-serif;
+  background: var(--background);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Navbar */
+.navbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--gradient-primary);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.logo-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.brand-name a {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--primary);
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+}
+
+/* Hero Section */
+.hero-section {
+  padding: 4rem 0 3rem;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+}
+
+/* Search Box */
+.search-box {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.search-box:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.search-input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: "Cairo", sans-serif;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.search-btn {
+  padding: 1rem 2rem;
+  background: var(--gradient-primary);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: "Cairo", sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+}
+
+.search-btn:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #6540a2 100%);
+}
+
+/* Courses Section */
+.courses-section {
+  padding: 3rem 0 4rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* Courses Grid */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.course-card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.course-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary);
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+}
+
+.course-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.course-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-primary);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.course-info {
+  flex: 1;
+}
+
+.course-code {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.course-name {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.course-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background: var(--surface-light);
+  border-radius: 0.75rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.stat-item svg {
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
+}
+
+/* === الأزرار (تصفح الملفات + تحميل) === */
+.course-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* زر تحميل */
+.course-actions .download-btn {
+  flex: 1;
+  background: var(--surface-light);
+  color: var(--text-primary);
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.875rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.course-actions .download-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--primary);
+}
+
+.course-actions .download-btn:hover {
+  background: var(--surface);
+  transform: translateY(-2px);
+}
+
+/* زر تصفح الملفات */
+.course-actions .browse-btn {
+  flex: 1;
+  background: var(--gradient-primary);
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.875rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+}
+
+.course-actions .browse-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #fff;
+}
+
+.course-actions .browse-btn:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #6540a2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+
+/* ===== Fix: Global Buttons (.btn) used in admin + course-files page ===== */
+.btn {
+  flex: 0 0 auto;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: "Cairo", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #6540a2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.35);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+}
+
+
+
+/* Footer */
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.footer p {
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .courses-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .course-actions {
+    flex-direction: column;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.course-card {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.course-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.course-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.course-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.course-card:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.course-card:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.course-card:nth-child(6) {
+  animation-delay: 0.6s;
+}
+/* ===== Select: remove native arrow completely ===== */
+.form-group select{
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: none !important;   /* remove old custom arrow */
+  padding-right: 3.25rem !important;   /* space for our arrow */
+  position: relative;
+}
+
+/* ===== Custom arrow (single) ===== */
+.form-group{
+  position: relative;
+}
+
+.form-group select{
+  background-color: var(--surface) !important;
+}
+
+.form-group select::ms-expand{
+  display: none; /* old Edge/IE */
+}
+
+
+.form-group.has-select{
+  position: relative;
+}
+
+.form-group.has-select::after{
+  content: "";
+  position: absolute;
+  top: calc(50% + 14px);
+  right: 1.25rem;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 9px solid var(--text-secondary);
+  transform: translateY(-50%);
+  opacity: 0.9;
+}
+
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+/* تفعيل مظهر موبايل */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  /* Navbar */
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-menu {
+    display: none;            /* نخفيها افتراضيًا */
+    position: absolute;
+    top: 70px;
+    right: 1rem;
+    left: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.75rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 999;
+  }
+
+  .nav-menu.open {
+    display: flex;            /* تظهر لما نضغط همبرجر */
+  }
+
+  .nav-link {
+    padding: 0.75rem 0.75rem;
+    border-radius: 10px;
+  }
+
+  .nav-link.active::after {
+    display: none;            /* خط active تحت الرابط مو حلو للموبايل */
+  }
+
+  .nav-link.active {
+    background: rgba(102, 126, 234, 0.12);
+    color: var(--primary);
+  }
+
+  /* Hero */
+  .hero-section {
+    padding: 2.25rem 0 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Search bar مثل الصورة: input + زر */
+  .search-box {
+    flex-direction: row;
+    border-radius: 0.9rem;
+  }
+
+  .search-input {
+    padding: 0.9rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .search-btn {
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  /* Courses grid = عمود واحد */
+  .courses-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* الكرت أنحف */
+  .course-card {
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+  }
+
+  /* عنوان المادة بالوسط زي الصورة */
+  .course-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  /* اخفِ الأيقونة الكبيرة (لو تبغى شكل زي الصورة تمامًا) */
+  .course-icon {
+    display: none;
+  }
+
+  .course-code {
+    font-size: 1.3rem;
+  }
+
+  .course-name {
+    font-size: 0.95rem;
+  }
+
+  /* stats وسط */
+  .course-stats {
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  /* الأزرار جنب بعض (مو تحت بعض) */
+  .course-actions {
+    flex-direction: row !important;
+    gap: 0.75rem;
+  }
+
+  .btn,
+  .course-actions .browse-btn,
+  .course-actions .download-btn {
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+    border-radius: 0.9rem;
+  }
+}
+.course-card{
+  scroll-margin-top: 120px;
+}
+
+.course-card.search-hit{
+  outline: 2px solid var(--primary);
+  box-shadow: 0 0 0 6px rgba(0,0,0,.15);
+  transform: translateY(-2px);
+  transition: .2s;
+}
+
+
+/* موبايل صغير جدًا */
+@media (max-width: 420px) {
+  .search-btn span {
+    display: none; /* لو الزر طويل عندك */
+  }
+
+  .course-code {
+    font-size: 1.2rem;
+  }
+
+  .btn,
+  .course-actions .browse-btn,
+  .course-actions .download-btn {
+    font-size: 0.9rem;
+    padding: 0.8rem 0.9rem;
+  }
+}
+
+.site-footer{
+  margin-top: 3rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+.footer-credit{
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: .2px;
+  opacity: .9;
+  transition: .2s;
+}
+
+.footer-credit:hover{
+  color: var(--primary);
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الإدارة - إدارة المحتوى</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <div class="logo-icon" style="margin: 0 auto 2rem; width: 60px; height: 60px;">
+        <svg viewBox="0 0 40 40" fill="none">
+          <rect x="8" y="8" width="24" height="24" rx="4" stroke="currentColor" stroke-width="2"/>
+          <path d="M16 20L20 24L24 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>لوحة الإدارة</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 2rem;">أدخل كلمة المرور للدخول</p>
+      <form id="loginForm" class="admin-form">
+        <div class="form-group">
+          <input type="password" id="adminPassword" placeholder="كلمة المرور" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">دخول</button>
+      </form>
+     
+    </div>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+              
+
+                  <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <line x1="3" y1="6" x2="21" y2="6"></line>
+    <line x1="3" y1="12" x2="21" y2="12"></line>
+    <line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</button>
+
+
+                <span class="brand-name"><a href="./index.html">UniCourse</a></span>
+
+              
+
+
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">المواد</a></li>
+                <li><a href="./teachers.html" class="nav-link">الأساتذة</a></li>
+                <!-- Added admin panel link -->
+                <li><a href="admin.html" class="nav-link" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">لوحة الإدارة</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+      <div class="container">
+        <div class="admin-header">
+          <h1>إدارة المواد والملفات والأساتذة</h1>
+          <p>أضف وعدّل المحتوى بسهولة (Realtime Database)</p>
+        </div>
+
+        <div class="admin-content">
+
+          <!-- ====== COURSES ====== -->
+          <div class="admin-card">
+            <div class="card-header">
+              <h2>إضافة مادة جديدة</h2>
+            </div>
+
+            <form id="addCourseForm" class="admin-form">
+              <div class="form-group">
+                <label>رمز المادة</label>
+                <input type="text" id="courseCode" placeholder="مثال: COS100" required>
+              </div>
+
+              <div class="form-group">
+                <label>اسم المادة</label>
+                <input type="text" id="courseName" placeholder="مثال: البرمجة الحاسوبية (1)" required>
+              </div>
+
+              <div class="form-group">
+                <label>الوصف</label>
+                <textarea id="courseDescription" placeholder="وصف مختصر للمادة" rows="3"></textarea>
+              </div>
+
+              <div class="form-group has-select">
+                <label>القسم</label>
+                <select id="courseCategory" required>
+                  <option value="">اختر القسم</option>
+                  <option value="general">مواد الإعداد العام</option>
+                  <option value="cs">مواد علوم الحاسب</option>
+                  <option value="is">مواد نظم المعلومات</option>
+                  <option value="islamic">مواد السلم</option>
+                  <option value="management">مواد الادارة</option>
+
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary">إضافة المادة</button>
+            </form>
+          </div>
+
+          <div class="admin-card">
+            <div class="card-header">
+              <h2>إضافة ملفات لمادة</h2>
+            </div>
+
+            <form id="addFilesForm" class="admin-form">
+              <div class="form-group has-select">
+                <label>اختر المادة</label>
+                <select id="selectCourse" required>
+                  <option value="">اختر المادة</option>
+                </select>
+              </div>
+
+              <div class="form-group has-select">
+                <label>القسم/المجلد</label>
+                <select id="fileFolder" required>
+                  <option value="">اختر القسم</option>
+                  <option value="lectures">المحاضرات</option>
+                  <option value="exams">الاختبارات</option>
+                  <option value="assignments">الواجبات</option>
+                  <option value="notes">الملخصات</option>
+                  <option value="other">أخرى</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>رفع الملف</label>
+                <div class="file-upload-wrapper">
+                  <input id="fileUpload" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx" />
+                  <label for="fileUpload" class="file-upload-label">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span id="fileUploadText">اختر ملف للرفع</span>
+                  </label>
+                </div>
+                <small>الصيغ المدعومة: PDF, DOC, DOCX, PPT, PPTX (يفضل أقل من 5MB)</small>
+              </div>
+
+              <button type="submit" class="btn btn-primary">إضافة الملف</button>
+            </form>
+          </div>
+
+          <div class="admin-card">
+            <div class="card-header">
+              <h2>قائمة المواد الحالية</h2>
+              <button onclick="exportData()" class="btn btn-secondary">تصدير بيانات المواد</button>
+            </div>
+            <div id="coursesList" class="courses-list"></div>
+          </div>
+
+          <!-- ====== TEACHERS ====== -->
+          <div class="admin-card">
+            <div class="card-header">
+              <h2>إدارة الأساتذة</h2>
+              <a href="teachers.html" class="btn btn-secondary" style="text-decoration:none;">عرض صفحة الأساتذة</a>
+            </div>
+
+            <form id="teacherForm" class="admin-form">
+              <input type="hidden" id="teacherId" value="">
+
+              <div class="form-group">
+                <label>اسم الدكتور</label>
+                <input type="text" id="teacherName" placeholder="مثال: د. أحمد السبيعي" required>
+              </div>
+
+              <div class="form-group">
+                <label>قسم الدكتور</label>
+                <input type="text" id="teacherDept" placeholder="مثال: علوم الحاسب" required>
+              </div>
+
+              <div class="form-group">
+                <label>البريد الجامعي</label>
+                <input type="email" id="teacherEmail" placeholder="مثال: a.s@ksu.edu.sa" required>
+              </div>
+
+              <div class="form-group">
+                <label>رقم مكتب الدكتور</label>
+                <input type="text" id="teacherOffice" placeholder="مثال: مبنى 22 - مكتب 3B-214" required>
+              </div>
+
+              <div class="form-group">
+                <label>رقم الدكتور</label>
+                <input type="text" id="teacherPhone" placeholder="مثال: 011xxxxxxx" required>
+              </div>
+
+              <div class="form-group">
+                <label>صورة الدكتور (اختياري)</label>
+                <input type="text" id="teacherPhotoUrl" placeholder="رابط صورة (اختياري)">
+
+                <small style="margin-top:.35rem;">
+                  أو ارفع صورة صغيرة (بدون Storage). الأفضل: صورة أقل من 300KB.
+                </small>
+
+                <div class="file-upload-wrapper" style="margin-top:.75rem;">
+                  <input type="file" id="teacherPhotoFile" accept="image/*">
+                  <label for="teacherPhotoFile" class="file-upload-label">
+                    <span id="teacherPhotoText">اختر صورة للرفع</span>
+                  </label>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:.75rem; align-items:center;">
+                <button type="submit" class="btn btn-primary" id="teacherSubmitBtn">إضافة الدكتور</button>
+                <button type="button" class="btn btn-secondary" id="teacherCancelEdit" style="display:none;">إلغاء التعديل</button>
+              </div>
+            </form>
+
+            <div class="files-section">
+              <h4>قائمة الأساتذة</h4>
+              <div id="teachersList" class="courses-list"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="admin-script.js"></script>
+</body>
+</html>
