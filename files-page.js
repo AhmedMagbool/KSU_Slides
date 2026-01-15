@@ -260,57 +260,58 @@ async function fetchFileData(courseCode, folderKey, fileId) {
   return snap.exists() ? snap.val() : null;
 }
 
-window.previewFile = async function previewFile(courseCode, folderKey, fileId, name) {
+window.previewFile = async function previewFile(dataUrl, name) {
+  if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
+
   try {
-    const dataUrl = await fetchFileData(courseCode, folderKey, fileId);
-    if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
-
-    // نحول base64 إلى Blob مؤقت
-    const base64Response = await fetch(dataUrl);
-    const blob = await base64Response.blob();
-
-    // نصنع رابط مؤقت
+    const res = await fetch(dataUrl);
+    const blob = await res.blob();
     const url = URL.createObjectURL(blob);
 
-    // نفتح نافذة جديدة ونحط iframe داخله
-    const win = window.open();
-    if (!win) return alert("يرجى السماح بالنوافذ المنبثقة.");
+    // PDF / Images: افتح مباشر
+    const win = window.open(url, "_blank");
+    if (!win) window.location.href = url;
 
-    win.document.write(`
-      <html>
-        <head>
-          <title>${name}</title>
-          <style>
-            html,body { margin:0; height:100%; background:#1a1a1a; }
-            iframe { width:100%; height:100%; border:none; background:#1a1a1a; }
-          </style>
-        </head>
-        <body>
-          <iframe src="${url}" title="${name}"></iframe>
-        </body>
-      </html>
-    `);
-
-    // تنظيف بعد ما يغلق المستخدم الصفحة
-    win.addEventListener("beforeunload", () => URL.revokeObjectURL(url));
-  } catch (err) {
-    console.error(err);
-    alert("حدث خطأ أثناء عرض الملف.");
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  } catch (e) {
+    console.error(e);
+    alert("المعاينة فشلت على هذا الجهاز. استخدم زر التحميل/المشاركة.");
   }
 };
 
 
-window.downloadFile = async function downloadFile(courseCode, folderKey, fileId, name) {
-  const dataUrl = await fetchFileData(courseCode, folderKey, fileId);
+
+window.downloadFile = async function downloadFile(dataUrl, name) {
   if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
 
-  const a = document.createElement("a");
-  a.href = dataUrl;
-  a.download = name || "file";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  try {
+    const res = await fetch(dataUrl);          // يحوّل base64 إلى response
+    const blob = await res.blob();
+    const fileName = name || "file";
+
+    // iOS: شارك/احفظ في Files (أفضل سلوك)
+    if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: blob.type })] })) {
+      const file = new File([blob], fileName, { type: blob.type });
+      await navigator.share({ files: [file], title: fileName });
+      return;
+    }
+
+    // fallback: فتح الملف في تبويب جديد (يقدر المستخدم "Share" ثم "Save to Files")
+    const url = URL.createObjectURL(blob);
+    const win = window.open(url, "_blank");
+    if (!win) {
+      // إذا المتصفح مانع البوب-أب
+      window.location.href = url;
+    }
+
+    // تنظيف بعد وقت
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  } catch (e) {
+    console.error(e);
+    alert("ما قدرت أحمل الملف على هذا الجهاز. جرّب من كمبيوتر أو افتحه بالمعاينة.");
+  }
 };
+
 
 function escapeQuotes(str) {
   return (str || "").replace(/'/g, "\\'").replace(/"/g, '\\"');
