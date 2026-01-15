@@ -260,24 +260,18 @@ async function fetchFileData(courseCode, folderKey, fileId) {
   return snap.exists() ? snap.val() : null;
 }
 
-window.previewFile = async function previewFile(dataUrl, name) {
+window.previewFile = function previewFile(dataUrl, name) {
   if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
 
-  try {
-    const res = await fetch(dataUrl);
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
+  const mime = String(dataUrl).slice(5, String(dataUrl).indexOf(";")) || "";
 
-    // PDF / Images: افتح مباشر
-    const win = window.open(url, "_blank");
-    if (!win) window.location.href = url;
-
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
-  } catch (e) {
-    console.error(e);
-    alert("المعاينة فشلت على هذا الجهاز. استخدم زر التحميل/المشاركة.");
+  if (mime.includes("pdf") || mime.startsWith("image/")) {
+    window.location.href = dataUrl; // نفس التبويب
+  } else {
+    window.downloadFile(dataUrl, name);
   }
 };
+
 
 
 
@@ -285,32 +279,26 @@ window.downloadFile = async function downloadFile(dataUrl, name) {
   if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
 
   try {
-    const res = await fetch(dataUrl);          // يحوّل base64 إلى response
+    const res = await fetch(dataUrl);
     const blob = await res.blob();
     const fileName = name || "file";
 
-    // iOS: شارك/احفظ في Files (أفضل سلوك)
-    if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: blob.type })] })) {
+    if (navigator.canShare) {
       const file = new File([blob], fileName, { type: blob.type });
-      await navigator.share({ files: [file], title: fileName });
-      return;
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: fileName });
+        return;
+      }
     }
 
-    // fallback: فتح الملف في تبويب جديد (يقدر المستخدم "Share" ثم "Save to Files")
-    const url = URL.createObjectURL(blob);
-    const win = window.open(url, "_blank");
-    if (!win) {
-      // إذا المتصفح مانع البوب-أب
-      window.location.href = url;
-    }
-
-    // تنظيف بعد وقت
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    // fallback: افتح في نفس التبويب
+    window.location.href = dataUrl;
   } catch (e) {
     console.error(e);
-    alert("ما قدرت أحمل الملف على هذا الجهاز. جرّب من كمبيوتر أو افتحه بالمعاينة.");
+    window.location.href = dataUrl;
   }
 };
+
 
 
 function escapeQuotes(str) {
