@@ -1,4 +1,4 @@
-// FILE: files-page.js (FASTER: chunked render + per-folder "show more")
+// FILE: files-page.js (STORAGE VERSION)
 import { rtdb } from "./firebase-config.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
@@ -27,8 +27,8 @@ function cacheSet(key, value) {
 /* =========================
    Render tuning
 ========================= */
-const PAGE_SIZE = 30;      // how many files to show initially per folder
-const CHUNK_SIZE = 20;     // how many DOM items per frame (smooth UI)
+const PAGE_SIZE = 30;
+const CHUNK_SIZE = 20;
 
 /* =========================
    Init
@@ -42,11 +42,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // fast cached header (if exists)
   const cached = cacheGet(`courseIndex:${code}`, 10 * 60 * 1000);
   if (cached) applyCourseHeader(cached);
 
-  // load lightweight index
   const idxSnap = await get(ref(rtdb, `coursesIndex/${code}`));
   if (idxSnap.exists()) {
     const courseIndex = idxSnap.val();
@@ -55,7 +53,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     applyCourseHeader(courseIndex);
     renderFilesByFolders(code, courseIndex.files || {});
   } else {
-    // fallback (slow)
     const courseSnap = await get(ref(rtdb, `courses/${code}`));
     if (!courseSnap.exists()) {
       document.getElementById("filesList").innerHTML = "<p style='color:#fff'>المادة غير موجودة</p>";
@@ -69,7 +66,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderFilesByFolders(code, meta);
   }
 
-  // nav
   const navToggle = document.getElementById("navToggle");
   const navMenu = document.querySelector(".nav-menu");
   if (navToggle && navMenu) {
@@ -84,7 +80,6 @@ function applyCourseHeader(course) {
   document.getElementById("courseDescription").textContent = course.description || "";
 }
 
-// convert old structure to meta-only
 function stripData(filesObj) {
   const out = {};
   for (const [folderKey, folderFilesObj] of Object.entries(filesObj || {})) {
@@ -96,6 +91,7 @@ function stripData(filesObj) {
         size: f.size || "",
         type: f.type || "file",
         uploadedAt: f.uploadedAt || 0,
+        downloadURL: f.downloadURL || "",
       };
     }
   }
@@ -124,7 +120,6 @@ function renderFilesByFolders(courseCode, filesObj) {
 
     hasAnyFiles = true;
 
-    // Sort once
     const list = folderEntries
       .map(([fileId, file]) => ({ fileId, ...file }))
       .sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
@@ -162,11 +157,9 @@ function renderFilesByFolders(courseCode, filesObj) {
     const grid = section.querySelector(".files-grid");
     filesList.appendChild(section);
 
-    // Render first page chunked (fast + smooth)
     const first = list.slice(0, PAGE_SIZE);
     renderChunked(grid, first, (file) => createFileItem(courseCode, folderKey, file.fileId, file));
 
-    // Wire "show more"
     const btn = section.querySelector(".show-more-btn");
     if (btn) {
       let offset = PAGE_SIZE;
@@ -191,7 +184,6 @@ function renderFilesByFolders(courseCode, filesObj) {
   }
 }
 
-// Render many items without freezing the page
 function renderChunked(container, items, renderItem) {
   let i = 0;
 
@@ -213,133 +205,27 @@ function renderChunked(container, items, renderItem) {
   requestAnimationFrame(step);
 }
 
-function createFileItem(courseCode, folderKey, fileId, file) {
-  const item = document.createElement("div");
-  item.className = "file-item";
 
-  const name = escapeHTML(file.name || "ملف");
-  const size = escapeHTML(file.size || "");
-  const type = String(file.type || "file").toUpperCase();
 
-  item.innerHTML = `
-    <div class="file-info">
-      <div class="file-details">
-        <div class="file-name">${name}</div>
-        <div class="file-meta">
-          <span>${size}</span>
-          <span>•</span>
-          <span>${escapeHTML(type)}</span>
-        </div>
-      </div>
-    </div>
+// المعاينة المباشرة من Storage URL
+window.previewFile = function previewFile(downloadURL, name) {
+  if (!downloadURL) return alert(`الملف غير متوفر: ${name}`);
 
-    <div class="file-actions">
-      <button class="btn-icon" title="معاينة" onclick="previewFile('${escapeQuotes(courseCode)}','${escapeQuotes(folderKey)}','${escapeQuotes(fileId)}','${escapeQuotes(file.name || "")}')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-          <circle cx="12" cy="12" r="3"></circle>
-        </svg>
-      </button>
-
-      <button class="btn-icon btn-download" title="تحميل" onclick="downloadFile('${escapeQuotes(courseCode)}','${escapeQuotes(folderKey)}','${escapeQuotes(fileId)}','${escapeQuotes(file.name || "")}')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-      </button>
-    </div>
-  `;
-
-  return item;
-}
-
-// Fetch only the file data when needed
-async function fetchFileData(courseCode, folderKey, fileId) {
-  const snap = await get(ref(rtdb, `courses/${courseCode}/files/${folderKey}/${fileId}/data`));
-  return snap.exists() ? snap.val() : null;
-}
-
-function isIOS() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-}
-
-function isPhoneLike() {
-  // تقريب: شاشة صغيرة = جوال
-  return Math.min(window.innerWidth, window.innerHeight) <= 768;
-}
-
-function dataUrlByteSize(dataUrl) {
-  // حساب تقريبي لحجم base64
-  if (!dataUrl || !dataUrl.includes(",")) return 0;
-  const b64 = dataUrl.split(",")[1] || "";
-  const padding = (b64.match(/=*$/) || [""])[0].length;
-  return Math.floor((b64.length * 3) / 4) - padding;
-}
-
-function mimeFromDataUrl(dataUrl) {
-  const s = String(dataUrl || "");
-  const i = s.indexOf(";");
-  if (!s.startsWith("data:") || i === -1) return "";
-  return s.slice(5, i);
-}
-
-async function shareOrSaveIOS(dataUrl, name) {
-  const res = await fetch(dataUrl);
-  const blob = await res.blob();
-  const fileName = name || "file";
-  const file = new File([blob], fileName, { type: blob.type });
-
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    await navigator.share({ files: [file], title: fileName });
-    return true;
-  }
-  return false;
-}
-
-// ====== PREVIEW ======
-window.previewFile = async function previewFile(dataUrl, name) {
-  if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
-
-  const mime = mimeFromDataUrl(dataUrl);
-  const sizeBytes = dataUrlByteSize(dataUrl);
-
-  // نعرض فقط PDF/Images. غيرها تحميل
-  const canPreview = mime.includes("pdf") || mime.startsWith("image/");
-
-  // Threshold للجوال (عدّلها لو تبغى)
-  const HEAVY_PHONE_MB = 4.5; // فوق 4.5MB على الجوال: لا نعاين، نخليه تحميل
-  const isHeavyForPhone = isPhoneLike() && (sizeBytes / (1024 * 1024)) >= HEAVY_PHONE_MB;
-
-  // 1) iPad: عاين دائمًا (قدر الإمكان) بدون popup
-  // 2) جوال + ثقيل: تحويل لتحميل/مشاركة
-  if (!canPreview || isHeavyForPhone) {
-    return window.downloadFile(dataUrl, name);
-  }
-
-  // فتح بنفس التبويب (بدون window.open) -> ما يطلب تفعيل popups
-  window.location.href = dataUrl;
+  window.open(downloadURL, "_blank");
 };
 
-// ====== DOWNLOAD ======
-window.downloadFile = async function downloadFile(dataUrl, name) {
-  if (!dataUrl) return alert(`الملف غير متوفر: ${name}`);
+// التحميل المباشر من Storage URL
+window.downloadFile = function downloadFile(downloadURL, name) {
+  if (!downloadURL) return alert(`الملف غير متوفر: ${name}`);
 
-  // iOS: الأفضل "Share" عشان يحفظ في Files
-  if (isIOS()) {
-    try {
-      const ok = await shareOrSaveIOS(dataUrl, name);
-      if (ok) return;
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  // fallback: افتح في نفس التبويب وخله ينزل من الـ viewer
-  window.location.href = dataUrl;
+  const a = document.createElement("a");
+  a.href = downloadURL;
+  a.download = name || "file";
+  a.target = "_blank";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 };
-
-
 
 function escapeQuotes(str) {
   return (str || "").replace(/'/g, "\\'").replace(/"/g, '\\"');
@@ -351,4 +237,49 @@ function escapeHTML(str) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+// عدّل دالة createFileItem لتدعم urlDownload و urlView
+function createFileItem(courseCode, folderKey, fileId, file) {
+  const item = document.createElement("div");
+  item.className = "file-item";
+
+  const name = escapeHTML(file.name || "ملف");
+  const size = escapeHTML(file.size || "");
+  const type = String(file.type || "file").toUpperCase();
+  
+  // دعم كلا النوعين: Storage URL أو Google Drive URL
+  const downloadURL = file.downloadURL || file.urlDownload || "";
+  const viewURL = file.urlView || downloadURL;
+
+  item.innerHTML = `
+    <div class="file-info">
+      <div class="file-details">
+        <div class="file-name">${name}</div>
+        <div class="file-meta">
+          <span>${size}</span>
+          <span>-</span>
+          <span>${escapeHTML(type)}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="file-actions">
+      <button class="btn-icon" title="معاينة" onclick="previewFile('${escapeQuotes(viewURL)}','${escapeQuotes(name)}')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      </button>
+
+      <button class="btn-icon btn-download" title="تحميل" onclick="downloadFile('${escapeQuotes(downloadURL)}','${escapeQuotes(name)}')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </button>
+    </div>
+  `;
+
+  return item;
 }

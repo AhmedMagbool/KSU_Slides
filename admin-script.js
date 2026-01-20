@@ -1,8 +1,9 @@
 // FILE: admin-script.js
-import { rtdb } from "./firebase-config.js";
+import { rtdb, storage } from "./firebase-config.js";
 import { ref, get, set, push } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
 
-const ADMIN_PASSWORD = "445170340@1141064681";
+const ADMIN_PASSWORD = "445170340";
 
 /* =========================
    AUTH
@@ -15,18 +16,15 @@ function checkAuth() {
   }
 }
 function forceLogout() {
-  sessionStorage.removeItem("adminLoggedIn"); // إذا تستخدم sessionStorage
-  localStorage.removeItem("adminLoggedIn");   // لو كنت تستخدم localStorage بالغلط
+  sessionStorage.removeItem("adminLoggedIn");
+  localStorage.removeItem("adminLoggedIn");
 }
 
-// أهم حدث: يشتغل عند مغادرة الصفحة حتى مع bfcache
 window.addEventListener("pagehide", forceLogout);
 
-// احتياط إضافي: لو المستخدم بدّل تبويب/طلع من الصفحة
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden") forceLogout();
 });
-
 
 document.getElementById("loginForm").addEventListener("submit", (e) => {
   e.preventDefault();
@@ -36,7 +34,7 @@ document.getElementById("loginForm").addEventListener("submit", (e) => {
     sessionStorage.setItem("adminLoggedIn", "true");
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("adminPanel").style.display = "block";
-    initAdmin(); // init after login
+    initAdmin();
   } else {
     alert("كلمة المرور غير صحيحة!");
     document.getElementById("adminPassword").value = "";
@@ -103,6 +101,10 @@ function stripData(filesObj) {
         size: f.size || "",
         type: f.type || "file",
         uploadedAt: f.uploadedAt || 0,
+        storagePath: f.storagePath || "",
+        downloadURL: f.downloadURL || "",
+        urlDownload: f.urlDownload || "",
+        urlView: f.urlView || "",
       };
     }
   }
@@ -122,10 +124,8 @@ document.getElementById("fileUpload").addEventListener("change", (e) => {
   else label.classList.remove("has-file");
 });
 
-
 /* =========================
    COURSES INDEX (FAST)
-   coursesIndex/{code} => {code,name,description,category,files:{folder:{fileId:{meta...}}}}
 ========================= */
 let COURSES_INDEX = {};
 
@@ -136,7 +136,6 @@ async function ensureCoursesIndex() {
     return;
   }
 
-  // Build from old "courses" once (admin only)
   const slowSnap = await get(ref(rtdb, "courses"));
   const courses = slowSnap.exists() ? slowSnap.val() : {};
 
@@ -154,11 +153,11 @@ async function ensureCoursesIndex() {
   await set(ref(rtdb, "coursesIndex"), built);
   COURSES_INDEX = built;
 
-  showAlert("تم بناء فهرس المواد (coursesIndex) بنجاح ✅", "success");
+  showAlert("تم بناء فهرس المواد (coursesIndex) بنجاح", "success");
 }
 
 /* =========================
-   COURSES (ADMIN UI) - uses coursesIndex (fast)
+   COURSES (ADMIN UI)
 ========================= */
 async function loadCourses() {
   const snap = await get(ref(rtdb, "coursesIndex"));
@@ -192,7 +191,6 @@ function displayCourses(coursesObj) {
     is: "مواد نظم المعلومات",
     islamic: "مواد السلم",
     management: "مواد الادارة",
-
   };
 
   coursesList.innerHTML = arr
@@ -206,9 +204,9 @@ function displayCourses(coursesObj) {
             <p>${escapeHtml(course.description || "لا يوجد وصف")}</p>
 
             <div class="course-item-meta">
-              <span>📂 ${escapeHtml(categoryNames[course.category] || course.category)}</span>
-              <span>•</span>
-              <span>📄 ${filesCount} ملف</span>
+              <span>${escapeHtml(categoryNames[course.category] || course.category)}</span>
+              <span>-</span>
+              <span>${filesCount} ملف</span>
             </div>
 
             <div id="filesPanel-${escapeHtml(course.code)}" class="files-section" style="display:none; margin-top: 1rem;">
@@ -289,7 +287,7 @@ function renderCourseFilesInAdmin(code) {
             </div>
 
             <div class="course-item-actions" style="gap:.35rem;">
-              <button class="btn-icon" onclick="adminPreviewFile('${code}','${folderKey}','${f.fileId}','${escapeHtml(f.name || "")}')" title="تصفح">
+              <button class="btn-icon" onclick="adminPreviewFile('${code}','${folderKey}','${f.fileId}')" title="تصفح">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
@@ -304,7 +302,7 @@ function renderCourseFilesInAdmin(code) {
                 </svg>
               </button>
 
-              <button class="btn-icon delete" onclick="deleteCourseFile('${code}','${folderKey}','${f.fileId}')" title="حذف الملف">
+              <button class="btn-icon delete" onclick="deleteCourseFile('${code}','${folderKey}','${f.fileId}','${escapeHtml(f.storagePath || "")}')" title="حذف الملف">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
@@ -321,7 +319,7 @@ function renderCourseFilesInAdmin(code) {
       return `
         <div style="margin-bottom: 1rem;">
           <div style="color: var(--text-secondary); font-weight:700; margin-bottom:.5rem;">
-            📁 ${escapeHtml(folderTitle(folderKey))}
+            ${escapeHtml(folderTitle(folderKey))}
           </div>
           <div style="display:grid; gap:.5rem;">
             ${rows}
@@ -332,42 +330,48 @@ function renderCourseFilesInAdmin(code) {
     .join("");
 }
 
-// data is fetched only when preview/download
-async function fetchFileData(code, folderKey, fileId) {
-  const snap = await get(ref(rtdb, `courses/${code}/files/${folderKey}/${fileId}/data`));
-  return snap.exists() ? snap.val() : null;
+function getFileDownloadURL(code, folderKey, fileId) {
+  const file = COURSES_INDEX?.[code]?.files?.[folderKey]?.[fileId];
+  return file?.downloadURL || file?.urlDownload || null;
 }
 
-window.adminPreviewFile = async function adminPreviewFile(code, folderKey, fileId, name) {
-  const data = await fetchFileData(code, folderKey, fileId);
-  if (!data) return alert("الملف غير متوفر حالياً");
+window.adminPreviewFile = async function adminPreviewFile(code, folderKey, fileId) {
+  const file = COURSES_INDEX?.[code]?.files?.[folderKey]?.[fileId];
+  const url = file?.urlView || file?.downloadURL || file?.urlDownload;
+  if (!url) return alert("الملف غير متوفر حالياً");
 
-  const w = window.open();
-  w.document.write(`<iframe src="${data}" style="width:100%;height:100%;border:none;" title="${escapeHtml(name || "")}"></iframe>`);
+  window.open(url, "_blank");
 };
 
 window.adminDownloadFile = async function adminDownloadFile(code, folderKey, fileId, name) {
-  const data = await fetchFileData(code, folderKey, fileId);
-  if (!data) return alert("الملف غير متوفر حالياً");
+  const url = getFileDownloadURL(code, folderKey, fileId);
+  if (!url) return alert("الملف غير متوفر حالياً");
 
   const link = document.createElement("a");
-  link.href = data;
+  link.href = url;
   link.download = name || "file";
+  link.target = "_blank";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 };
 
-window.deleteCourseFile = async function deleteCourseFile(code, folderKey, fileId) {
+window.deleteCourseFile = async function deleteCourseFile(code, folderKey, fileId, storagePath) {
   if (!confirm("متأكد تبغى تحذف هذا الملف؟")) return;
 
   try {
-    // delete from real store
+    if (storagePath) {
+      try {
+        const fileRef = storageRef(storage, storagePath);
+        await deleteObject(fileRef);
+      } catch (storageErr) {
+        console.warn("Storage delete warning:", storageErr);
+      }
+    }
+
     await set(ref(rtdb, `courses/${code}/files/${folderKey}/${fileId}`), null);
-    // delete from index
     await set(ref(rtdb, `coursesIndex/${code}/files/${folderKey}/${fileId}`), null);
 
-    // update local
     if (COURSES_INDEX?.[code]?.files?.[folderKey]?.[fileId]) {
       delete COURSES_INDEX[code].files[folderKey][fileId];
     }
@@ -382,9 +386,25 @@ window.deleteCourseFile = async function deleteCourseFile(code, folderKey, fileI
 };
 
 window.deleteCourse = async function deleteCourse(code) {
-  if (!confirm(`هل أنت متأكد من حذف المادة ${code}؟ سيتم حذف كل الملفات أيضًا.`)) return;
+  if (!confirm(`هل أنت متأكد من حذف المادة ${code}؟ سيتم حذف كل الملفات أيضاً.`)) return;
 
   try {
+    const course = COURSES_INDEX?.[code];
+    if (course?.files) {
+      for (const [folderKey, folderFiles] of Object.entries(course.files)) {
+        for (const [fileId, file] of Object.entries(folderFiles || {})) {
+          if (file.storagePath) {
+            try {
+              const fileRef = storageRef(storage, file.storagePath);
+              await deleteObject(fileRef);
+            } catch (e) {
+              console.warn("Storage delete warning:", e);
+            }
+          }
+        }
+      }
+    }
+
     await set(ref(rtdb, `courses/${code}`), null);
     await set(ref(rtdb, `coursesIndex/${code}`), null);
 
@@ -436,6 +456,9 @@ document.getElementById("addCourseForm").addEventListener("submit", async (e) =>
   }
 });
 
+/* =========================
+   رفع الملفات إلى Firebase Storage
+========================= */
 document.getElementById("addFilesForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -448,18 +471,15 @@ document.getElementById("addFilesForm").addEventListener("submit", async (e) => 
   if (!folder) return showAlert("يرجى اختيار القسم!", "error");
   if (!files.length) return showAlert("يرجى اختيار ملف/ملفات!", "error");
 
-  // فلترة الملفات الكبيرة (كل ملف لحاله)
-  const tooBig = files.filter(f => f.size > 5 * 1024 * 1024);
+  const tooBig = files.filter((f) => f.size > 50 * 1024 * 1024);
   if (tooBig.length) {
-    showAlert(`فيه ملفات أكبر من 5MB وما راح تنرفع: ${tooBig.map(f => f.name).join("، ")}`, "error");
+    showAlert(`فيه ملفات أكبر من 50MB وما راح تنرفع: ${tooBig.map((f) => f.name).join("، ")}`, "error");
     return;
   }
 
-  // UI
   const total = files.length;
   showAlert(`بدأ رفع ${total} ملف... لا تقفل الصفحة`, "success");
 
-  // ارفع بالتسلسل عشان ما يعلق
   let uploaded = 0;
 
   try {
@@ -472,37 +492,50 @@ document.getElementById("addFilesForm").addEventListener("submit", async (e) => 
       if (ext === "pdf") fileType = "pdf";
       else if (["ppt", "pptx"].includes(ext)) fileType = "ppt";
       else if (["doc", "docx"].includes(ext)) fileType = "doc";
-
-      const dataUrl = await readFileAsDataURL(file);
+      else if (["xls", "xlsx"].includes(ext)) fileType = "xls";
+      else if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) fileType = "img";
+      else if (["zip", "rar", "7z"].includes(ext)) fileType = "zip";
 
       const folderRef = ref(rtdb, `courses/${courseCode}/files/${folder}`);
       const newFileRef = push(folderRef);
+      const fileId = newFileRef.key;
+
+      const storagePath = `courses/${courseCode}/${folder}/${fileId}_${fileName}`;
+      const fileStorageRef = storageRef(storage, storagePath);
+
+      const uploadResult = await uploadBytes(fileStorageRef, file);
+      const downloadURL = await getDownloadURL(uploadResult.ref);
 
       const full = {
-        id: newFileRef.key,
+        id: fileId,
         name: fileName,
         size: fileSize,
         type: fileType,
-        data: dataUrl,
+        storagePath: storagePath,
+        downloadURL: downloadURL,
         uploadedAt: Date.now(),
       };
 
-      // تخزين ثقيل
       await set(newFileRef, full);
 
-      // تخزين خفيف في coursesIndex (بدون data)
-      const meta = { id: full.id, name: full.name, size: full.size, type: full.type, uploadedAt: full.uploadedAt };
-      await set(ref(rtdb, `coursesIndex/${courseCode}/files/${folder}/${full.id}`), meta);
+      const meta = {
+        id: full.id,
+        name: full.name,
+        size: full.size,
+        type: full.type,
+        storagePath: full.storagePath,
+        downloadURL: full.downloadURL,
+        uploadedAt: full.uploadedAt,
+      };
+      await set(ref(rtdb, `coursesIndex/${courseCode}/files/${folder}/${fileId}`), meta);
 
       uploaded++;
-      // تحديث نص صغير بدل spam alerts
       document.getElementById("fileUploadText").textContent = `تم رفع ${uploaded}/${total}...`;
-      await new Promise(r => setTimeout(r, 0)); // يعطي المتصفح فرصة يتنفس
+      await new Promise((r) => setTimeout(r, 0));
     }
 
-    showAlert(`تم رفع ${uploaded} ملف بنجاح ✅`, "success");
+    showAlert(`تم رفع ${uploaded} ملف بنجاح`, "success");
 
-    // reset
     document.getElementById("addFilesForm").reset();
     document.getElementById("fileUploadText").textContent = "اختر ملف/ملفات للرفع";
     document.querySelector(".file-upload-label")?.classList.remove("has-file");
@@ -514,15 +547,91 @@ document.getElementById("addFilesForm").addEventListener("submit", async (e) => 
   }
 });
 
+/* =========================
+   استيراد JSON
+========================= */
+window.importCoursesFromJSON = async function importCoursesFromJSON() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
 
-function readFileAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      showAlert("جاري قراءة الملف...", "success");
+
+      const text = await file.text();
+      const data = JSON.parse(text);
+
+      const coursesCodes = Object.keys(data);
+      const total = coursesCodes.length;
+
+      if (!total) {
+        showAlert("الملف فارغ!", "error");
+        return;
+      }
+
+      if (!confirm(`سيتم استيراد ${total} مادة. متأكد؟`)) return;
+
+      showAlert(`جاري استيراد ${total} مادة... لا تقفل الصفحة`, "success");
+
+      let imported = 0;
+
+      for (const [code, course] of Object.entries(data)) {
+        const cleanedFiles = {};
+
+        if (course.files) {
+          for (const [folderKey, folderFiles] of Object.entries(course.files)) {
+            cleanedFiles[folderKey] = {};
+
+            for (const [fileId, file] of Object.entries(folderFiles || {})) {
+              if (file.urlDownload || file.downloadURL) {
+                cleanedFiles[folderKey][fileId] = {
+                  id: file.id || fileId,
+                  name: file.name || "",
+                  size: file.size || "",
+                  type: file.type || "file",
+                  mimeType: file.mimeType || "",
+                  uploadedAt: file.uploadedAt || Date.now(),
+                  urlDownload: file.urlDownload || "",
+                  urlView: file.urlView || "",
+                  downloadURL: file.downloadURL || "",
+                };
+              }
+            }
+
+            if (Object.keys(cleanedFiles[folderKey]).length === 0) {
+              delete cleanedFiles[folderKey];
+            }
+          }
+        }
+
+        const courseData = {
+          code: course.code || code,
+          name: course.name || "",
+          description: course.description || "",
+          category: course.category || "general",
+          files: cleanedFiles,
+        };
+
+        await set(ref(rtdb, `courses/${code}`), courseData);
+        await set(ref(rtdb, `coursesIndex/${code}`), courseData);
+
+        imported++;
+      }
+
+      showAlert(`تم استيراد ${imported} مادة بنجاح!`, "success");
+      await loadCourses();
+    } catch (err) {
+      console.error("Import error:", err);
+      showAlert(`فشل الاستيراد: ${err.message}`, "error");
+    }
+  };
+
+  input.click();
+};
 
 /* =========================
    EXPORT COURSES (INDEX)
@@ -544,15 +653,17 @@ window.exportData = async function exportData() {
 };
 
 /* =========================
-   TEACHERS (unchanged logic)
+   TEACHERS
 ========================= */
 const teacherForm = document.getElementById("teacherForm");
 const teacherId = document.getElementById("teacherId");
 const teacherName = document.getElementById("teacherName");
 const teacherDept = document.getElementById("teacherDept");
+const teacherRating = document.getElementById("teacherRating");
 const teacherEmail = document.getElementById("teacherEmail");
 const teacherOffice = document.getElementById("teacherOffice");
 const teacherPhone = document.getElementById("teacherPhone");
+const teacherOfficeHours = document.getElementById("teacherOfficeHours");
 const teacherPhotoUrl = document.getElementById("teacherPhotoUrl");
 const teacherSubmitBtn = document.getElementById("teacherSubmitBtn");
 const teacherCancelEdit = document.getElementById("teacherCancelEdit");
@@ -590,9 +701,13 @@ function renderTeachersList(obj) {
           <h3>${escapeHtml(t.name || "—")}</h3>
           <p>${escapeHtml(t.dept || "—")}</p>
           <div class="course-item-meta">
-            <span>📧 ${escapeHtml(t.email || "—")}</span>
-            <span>•</span>
-            <span>🏢 ${escapeHtml(t.office || "—")}</span>
+            <span>${escapeHtml(t.email || "—")}</span>
+            <span>-</span>
+            <span>${escapeHtml(t.office || "—")}</span>
+            <span>-</span>
+            <span>التقييم: ${t.ratingPercent ? t.ratingPercent + "%" : "غير محدد"}</span>
+            <span>-</span>
+            <span>الساعات: ${escapeHtml(t.officeHours || "غير محددة")}</span>
           </div>
         </div>
 
@@ -626,9 +741,11 @@ window.editTeacher = function editTeacher(id) {
   teacherId.value = id;
   teacherName.value = t.name || "";
   teacherDept.value = t.dept || "";
+  teacherRating.value = t.ratingPercent || "";
   teacherEmail.value = t.email || "";
   teacherOffice.value = t.office || "";
   teacherPhone.value = t.phone || "";
+  teacherOfficeHours.value = t.officeHours || "";
   teacherPhotoUrl.value = t.photo || "";
 
   teacherSubmitBtn.textContent = "تحديث بيانات الدكتور";
@@ -641,6 +758,8 @@ function resetTeacherForm() {
   teacherId.value = "";
   teacherForm.reset();
   if (teacherPhotoText) teacherPhotoText.textContent = "اختر صورة للرفع";
+  if (teacherOfficeHours) teacherOfficeHours.value = "";
+  if (teacherRating) teacherRating.value = "";
   teacherSubmitBtn.textContent = "إضافة الدكتور";
   teacherCancelEdit.style.display = "none";
 }
@@ -649,6 +768,16 @@ window.deleteTeacher = async function deleteTeacher(id) {
   if (!confirm("هل أنت متأكد من حذف هذا الأستاذ؟")) return;
 
   try {
+    const teacher = TEACHERS_CACHE?.[id];
+    if (teacher?.photoStoragePath) {
+      try {
+        const photoRef = storageRef(storage, teacher.photoStoragePath);
+        await deleteObject(photoRef);
+      } catch (e) {
+        console.warn("Photo delete warning:", e);
+      }
+    }
+
     await set(ref(rtdb, `teachers/${id}`), null);
     showAlert("تم حذف الأستاذ بنجاح!", "success");
     resetTeacherForm();
@@ -663,12 +792,16 @@ teacherForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const id = teacherId.value.trim();
+  const ratingValue = parseInt(teacherRating.value.trim()) || 0;
+  
   const payload = {
     name: teacherName.value.trim(),
     dept: teacherDept.value.trim(),
     email: teacherEmail.value.trim(),
     office: teacherOffice.value.trim(),
     phone: teacherPhone.value.trim(),
+    officeHours: teacherOfficeHours.value.trim(),
+    ratingPercent: Math.min(100, Math.max(0, ratingValue)),
     photo: teacherPhotoUrl.value.trim(),
   };
 
@@ -679,16 +812,34 @@ teacherForm.addEventListener("submit", async (e) => {
 
   const file = teacherPhotoFile?.files?.[0];
   if (file) {
-    if (file.size > 300 * 1024) {
-      showAlert("الصورة كبيرة. خلك تحت 300KB (بدون Storage).", "error");
+    if (file.size > 2 * 1024 * 1024) {
+      showAlert("الصورة كبيرة. خلك تحت 2MB.", "error");
       return;
     }
-    payload.photo = await readFileAsDataURL(file);
+
+    try {
+      const photoId = id || push(ref(rtdb, "teachers")).key;
+      const photoPath = `teachers/${photoId}_${file.name}`;
+      const photoStorageRef = storageRef(storage, photoPath);
+
+      const uploadResult = await uploadBytes(photoStorageRef, file);
+      payload.photo = await getDownloadURL(uploadResult.ref);
+      payload.photoStoragePath = photoPath;
+    } catch (uploadErr) {
+      console.error(uploadErr);
+      showAlert("فشل رفع الصورة!", "error");
+      return;
+    }
   }
 
   try {
     if (id) {
-      await set(ref(rtdb, `teachers/${id}`), { ...payload, updatedAt: Date.now(), createdAt: TEACHERS_CACHE?.[id]?.createdAt || Date.now() });
+      await set(ref(rtdb, `teachers/${id}`), {
+        ...payload,
+        updatedAt: Date.now(),
+        createdAt: TEACHERS_CACHE?.[id]?.createdAt || Date.now(),
+        photoStoragePath: payload.photoStoragePath || TEACHERS_CACHE?.[id]?.photoStoragePath || "",
+      });
       showAlert("تم تحديث بيانات الأستاذ بنجاح!");
     } else {
       const newRef = push(ref(rtdb, "teachers"));
