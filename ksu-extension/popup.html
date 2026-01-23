@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 350px;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #fff;
+      text-align: center;
+    }
+    .status {
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      text-align: center;
+    }
+    .status.error { background: #7f1d1d; }
+    .status.success { background: #14532d; }
+    .config {
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .config label {
+      display: block;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 5px;
+    }
+    .config input, .config select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      background: #0f172a;
+      color: #fff;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: #334155;
+      color: #fff;
+    }
+    .progress {
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: none;
+    }
+    .progress-bar {
+      height: 8px;
+      background: #334155;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .progress-text {
+      font-size: 12px;
+      color: #94a3b8;
+      text-align: center;
+    }
+    .info {
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>استخراج شعب KSU</h1>
+  
+  <div id="status" class="status">
+    افتح صفحة المقررات المطروحة ثم اضغط استخراج
+  </div>
+
+  <div class="config">
+    <label>التخصص:</label>
+    <select id="major">
+      <option value="general">إعداد عام</option>
+      <option value="cs">علوم الحاسب</option>
+      <option value="is">نظم المعلومات</option>
+    </select>
+
+    <label>Firebase Database URL:</label>
+    <input type="text" id="firebaseUrl" placeholder="https://xxx.firebaseio.com">
+  </div>
+
+  <div id="progress" class="progress">
+    <div class="progress-bar">
+      <div id="progressFill" class="progress-fill"></div>
+    </div>
+    <div id="progressText" class="progress-text">0 / 0</div>
+  </div>
+
+  <button id="extractBtn" class="btn-primary">استخراج الشعب</button>
+  <button id="downloadBtn" class="btn-secondary">تحميل JSON فقط</button>
+
+  <div class="info">
+    سيتم استخراج كل الشعب مع الأوقات وإرسالها للموقع
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

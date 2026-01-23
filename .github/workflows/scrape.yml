@@ -1,0 +1,37 @@
+name: Scrape KSU Schedule
+
+on:
+  # تشغيل يدوي
+  workflow_dispatch:
+  
+  # تشغيل أسبوعي (كل سبت الساعة 3 صباحاً بتوقيت السعودية)
+  schedule:
+    - cron: '0 0 * * 6'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: ./scraper
+        run: npm install
+
+      - name: Run scraper
+        working-directory: ./scraper
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+        run: node scrape-ksu.js
+
+      - name: Log completion
+        run: echo "Scraping completed at $(date)"
