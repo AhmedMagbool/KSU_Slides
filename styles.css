@@ -190,9 +190,12 @@ body {
   padding: 3rem 0 4rem;
 }
 
+/* Section Header - العنوان في النص والقائمة على اليسار */
 .section-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+  position: relative;
+  padding: 0 1rem;
 }
 
 .section-title {
@@ -204,6 +207,92 @@ body {
 .section-subtitle {
   color: var(--text-secondary);
   font-size: 1rem;
+}
+
+/* Category Filter - ثابت على يسار العنوان */
+.section-header .category-filter {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.category-filter {
+  position: relative;
+}
+
+.filter-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: "Cairo", sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-dropdown-btn:hover {
+  border-color: var(--primary);
+}
+
+.filter-dropdown-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.filter-dropdown-btn.open svg {
+  transform: rotate(180deg);
+}
+
+.filter-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  min-width: 180px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.filter-dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.filter-option {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  background: none;
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: "Cairo", sans-serif;
+  text-align: right;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-option:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.filter-option.active {
+  background: var(--primary);
+  color: white;
 }
 
 /* Courses Grid */
@@ -355,7 +444,6 @@ body {
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-
 /* ===== Fix: Global Buttons (.btn) used in admin + course-files page ===== */
 .btn {
   flex: 0 0 auto;
@@ -398,8 +486,6 @@ body {
   transform: translateY(-2px);
 }
 
-
-
 /* Footer */
 .footer {
   background: var(--surface);
@@ -438,6 +524,17 @@ body {
   .course-actions {
     flex-direction: column;
   }
+  
+  /* Filter responsive */
+  .section-header .category-filter {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+  }
 }
 
 /* Animations */
@@ -456,53 +553,40 @@ body {
   animation: fadeIn 0.5s ease-out forwards;
 }
 
-.course-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.course-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.course-card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-.course-card:nth-child(4) {
-  animation-delay: 0.4s;
-}
-.course-card:nth-child(5) {
-  animation-delay: 0.5s;
-}
-.course-card:nth-child(6) {
-  animation-delay: 0.6s;
-}
+.course-card:nth-child(1) { animation-delay: 0.1s; }
+.course-card:nth-child(2) { animation-delay: 0.2s; }
+.course-card:nth-child(3) { animation-delay: 0.3s; }
+.course-card:nth-child(4) { animation-delay: 0.4s; }
+.course-card:nth-child(5) { animation-delay: 0.5s; }
+.course-card:nth-child(6) { animation-delay: 0.6s; }
+
 /* ===== Select: remove native arrow completely ===== */
-.form-group select{
+.form-group select {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
-  background-image: none !important;   /* remove old custom arrow */
-  padding-right: 3.25rem !important;   /* space for our arrow */
+  background-image: none !important;
+  padding-right: 3.25rem !important;
   position: relative;
 }
 
-/* ===== Custom arrow (single) ===== */
-.form-group{
+.form-group {
   position: relative;
 }
 
-.form-group select{
+.form-group select {
   background-color: var(--surface) !important;
 }
 
-.form-group select::ms-expand{
-  display: none; /* old Edge/IE */
+.form-group select::ms-expand {
+  display: none;
 }
 
-
-.form-group.has-select{
+.form-group.has-select {
   position: relative;
 }
 
-.form-group.has-select::after{
+.form-group.has-select::after {
   content: "";
   position: absolute;
   top: calc(50% + 14px);
@@ -527,13 +611,12 @@ body {
   cursor: pointer;
 }
 
-/* تفعيل مظهر موبايل */
+/* Mobile Responsive */
 @media (max-width: 768px) {
   .container {
     padding: 0 1rem;
   }
 
-  /* Navbar */
   .nav-toggle {
     display: inline-flex;
     align-items: center;
@@ -541,7 +624,7 @@ body {
   }
 
   .nav-menu {
-    display: none;            /* نخفيها افتراضيًا */
+    display: none;
     position: absolute;
     top: 70px;
     right: 1rem;
@@ -556,7 +639,7 @@ body {
   }
 
   .nav-menu.open {
-    display: flex;            /* تظهر لما نضغط همبرجر */
+    display: flex;
   }
 
   .nav-link {
@@ -565,7 +648,7 @@ body {
   }
 
   .nav-link.active::after {
-    display: none;            /* خط active تحت الرابط مو حلو للموبايل */
+    display: none;
   }
 
   .nav-link.active {
@@ -573,7 +656,6 @@ body {
     color: var(--primary);
   }
 
-  /* Hero */
   .hero-section {
     padding: 2.25rem 0 1.5rem;
   }
@@ -587,7 +669,6 @@ body {
     margin-bottom: 1.5rem;
   }
 
-  /* Search bar مثل الصورة: input + زر */
   .search-box {
     flex-direction: row;
     border-radius: 0.9rem;
@@ -604,19 +685,16 @@ body {
     white-space: nowrap;
   }
 
-  /* Courses grid = عمود واحد */
   .courses-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  /* الكرت أنحف */
   .course-card {
     padding: 1.25rem;
     border-radius: 1.25rem;
   }
 
-  /* عنوان المادة بالوسط زي الصورة */
   .course-header {
     flex-direction: column;
     text-align: center;
@@ -624,7 +702,6 @@ body {
     margin-bottom: 1rem;
   }
 
-  /* اخفِ الأيقونة الكبيرة (لو تبغى شكل زي الصورة تمامًا) */
   .course-icon {
     display: none;
   }
@@ -637,13 +714,11 @@ body {
     font-size: 0.95rem;
   }
 
-  /* stats وسط */
   .course-stats {
     justify-content: center;
     margin-bottom: 1rem;
   }
 
-  /* الأزرار جنب بعض (مو تحت بعض) */
   .course-actions {
     flex-direction: row !important;
     gap: 0.75rem;
@@ -657,22 +732,22 @@ body {
     border-radius: 0.9rem;
   }
 }
-.course-card{
+
+.course-card {
   scroll-margin-top: 120px;
 }
 
-.course-card.search-hit{
+.course-card.search-hit {
   outline: 2px solid var(--primary);
-  box-shadow: 0 0 0 6px rgba(0,0,0,.15);
+  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
-  transition: .2s;
+  transition: 0.2s;
 }
 
-
-/* موبايل صغير جدًا */
+/* موبايل صغير جدا */
 @media (max-width: 420px) {
   .search-btn span {
-    display: none; /* لو الزر طويل عندك */
+    display: none;
   }
 
   .course-code {
@@ -687,27 +762,129 @@ body {
   }
 }
 
-.site-footer{
+.site-footer {
   margin-top: 3rem;
   padding: 1.25rem 0;
   border-top: 1px solid var(--border);
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
   text-align: center;
 }
 
-.footer-credit{
+.footer-credit {
   color: var(--text-secondary);
   text-decoration: none;
   font-weight: 700;
-  letter-spacing: .2px;
-  opacity: .9;
-  transition: .2s;
+  letter-spacing: 0.2px;
+  opacity: 0.9;
+  transition: 0.2s;
 }
 
-.footer-credit:hover{
+.footer-credit:hover {
   color: var(--primary);
   opacity: 1;
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+
+/* Filter Container - على يسار العنوان */
+.filter-container {
+    position: absolute;
+    left: 2rem;
+    top: 0;
+    z-index: 100;
+}
+
+.courses-section .container {
+    position: relative;
+}
+.category-filter {
+    position: relative;
+}
+
+.filter-dropdown-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: "Cairo", sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-dropdown-btn:hover {
+    border-color: var(--primary);
+}
+
+.filter-dropdown-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.filter-dropdown-btn.open svg {
+    transform: rotate(180deg);
+}
+
+.filter-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 180px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 9999;
+}
+
+.filter-dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.filter-option {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    background: none;
+    border: none;
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: "Cairo", sans-serif;
+    text-align: right;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.filter-option:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.filter-option.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* Section Header */
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filter-container {
+        justify-content: center;
+    }
 }

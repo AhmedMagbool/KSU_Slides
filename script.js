@@ -42,6 +42,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     navToggle.addEventListener("click", () => navMenu.classList.toggle("open"));
     navMenu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => navMenu.classList.remove("open")));
   }
+
+  // Initialize Category Filter
+  initCategoryFilter();
 });
 
 async function loadCourses() {
@@ -165,6 +168,10 @@ function handleSearch() {
 
   if (!query) {
     allCards.forEach((c) => (c.style.display = ""));
+    // Reset sections visibility
+    document.querySelectorAll('.category-section').forEach(s => s.style.display = '');
+    document.getElementById('generalSection').style.display = '';
+    document.getElementById('generalCoursesGrid').style.display = '';
     return;
   }
 
@@ -196,4 +203,99 @@ function escapeHTML(str) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+/* =========================
+   Category Filter
+========================= */
+function initCategoryFilter() {
+  const categoryBtn = document.getElementById('categoryDropdownBtn');
+  const categoryMenu = document.getElementById('categoryDropdownMenu');
+  const categoryText = document.getElementById('selectedCategoryText');
+  const filterOptions = document.querySelectorAll('.filter-option');
+
+  if (!categoryBtn || !categoryMenu) return;
+
+  // Toggle dropdown
+  categoryBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    categoryBtn.classList.toggle('open');
+    categoryMenu.classList.toggle('show');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', () => {
+    categoryBtn.classList.remove('open');
+    categoryMenu.classList.remove('show');
+  });
+
+  // Filter options click
+  filterOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      const category = option.dataset.category;
+      
+      // Update button text
+      categoryText.textContent = option.textContent;
+      
+      // Update active state
+      filterOptions.forEach(opt => opt.classList.remove('active'));
+      option.classList.add('active');
+      
+      // Close dropdown
+      categoryBtn.classList.remove('open');
+      categoryMenu.classList.remove('show');
+      
+      // Filter courses
+      filterCoursesByCategory(category);
+    });
+  });
+}
+
+function filterCoursesByCategory(category) {
+  // All sections
+  const generalSection = document.getElementById('generalSection');
+  const generalGrid = document.getElementById('generalCoursesGrid');
+  const csSection = document.getElementById('csSection');
+  const csGrid = document.getElementById('csCoursesGrid');
+  const isSection = document.getElementById('isSection');
+  const isGrid = document.getElementById('isCoursesGrid');
+  const islamicSection = document.getElementById('islamicSection');
+  const islamicGrid = document.getElementById('islamicCoursesGrid');
+  const managementSection = document.getElementById('managementSection');
+  const managementGrid = document.getElementById('MangamentCoursesGrid');
+
+  // Hide all first
+  const allSections = [
+    generalSection, generalGrid,
+    csSection, csGrid,
+    isSection, isGrid,
+    islamicSection, islamicGrid,
+    managementSection, managementGrid
+  ];
+
+  if (category === 'all') {
+    // Show all
+    allSections.forEach(el => { if (el) el.style.display = ''; });
+  } else {
+    // Hide all
+    allSections.forEach(el => { if (el) el.style.display = 'none'; });
+    
+    // Show selected category
+    if (category === 'general') {
+      if (generalSection) generalSection.style.display = '';
+      if (generalGrid) generalGrid.style.display = '';
+    } else if (category === 'cs') {
+      if (csSection) csSection.style.display = '';
+      if (csGrid) csGrid.style.display = '';
+    } else if (category === 'is') {
+      if (isSection) isSection.style.display = '';
+      if (isGrid) isGrid.style.display = '';
+    } else if (category === 'islamic') {
+      if (islamicSection) islamicSection.style.display = '';
+      if (islamicGrid) islamicGrid.style.display = '';
+    } else if (category === 'management') {
+      if (managementSection) managementSection.style.display = '';
+      if (managementGrid) managementGrid.style.display = '';
+    }
+  }
 }

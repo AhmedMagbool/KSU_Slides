@@ -1,93 +1,99 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UniCourse</title>
-
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="teachers.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أعضاء هيئة التدريس - UniCourse</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="teachers.css">
 </head>
-
 <body>
-  <nav class="navbar">
-    <div class="container">
-      <div class="nav-brand">
-        <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <span class="brand-name"><a href="./index.html">UniCourse</a></span>
+            </div>
 
-        <span class="brand-name"><a href="./index.html">UniCourse</a></span>
-      </div>
-
-      <ul class="nav-menu">
-        <li><a href="index.html" class="nav-link">المواد</a></li>
-        <li><a href="./teachers.html" class="nav-link active">اعضاء هيئة التدريس</a></li>
-        <li><a href="schedule.html" class="nav-link">منشئ الجدول</a></li>
-        <li><a href="admin.html" class="nav-link" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">لوحة الإدارة</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <main>
-    <section class="teachers-hero">
-      <div class="container">
-        <h1 class="hero-title">الأساتذة</h1>
-        <p class="hero-subtitle">تصفح قائمة الأساتذة وتفاصيل التواصل</p>
-
-        <div class="search-wrap">
-          <div class="search-box">
-            <button id="teacherSearchBtn" class="search-btn" type="button">
-              بحث
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </button>
-
-            <input
-              id="teacherSearch"
-              class="search-input"
-              type="text"
-              placeholder="ابحث باسم الدكتور أو القسم..."
-              autocomplete="off"
-            />
-          </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">المواد</a></li>
+                <li><a href="teachers.html" class="nav-link active">اعضاء هيئة التدريس</a></li>
+                <li><a href="admin.html" class="nav-link" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">لوحة الإدارة</a></li>
+            </ul>
         </div>
+    </nav>
 
-      </div>
-    </section>
+    <main>
+        <section class="hero-section teachers-hero">
+            <div class="container">
+                <h1 class="hero-title">أعضاء هيئة التدريس</h1>
+                <p class="hero-subtitle">تواصل مع أساتذة كلية علوم الحاسب التطبيقي</p>
+                
+                <div class="search-box">
+                    <input type="text" id="teacherSearch" class="search-input" placeholder="ابحث عن الأستاذ بالاسم أو القسم...">
+                    <button id="searchBtn" class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        بحث
+                    </button>
+                </div>
+            </div>
+        </section>
 
-    <section class="teachers-section">
-      <div class="container">
-        <div class="teachers-toolbar">
-          <div class="teachers-count" id="teachersCount">0 أستاذ</div>
+        <section class="teachers-section">
+            <div class="container">
+              
+                <!-- Section Header with Filter -->
+                <div class="section-header-wrapper">
+                    <!-- Filter على اليسار -->
+                    <div class="category-filter">
+                        <button class="filter-dropdown-btn" id="deptDropdownBtn">
+                            <span id="selectedDeptText">كل الأقسام</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="filter-dropdown-menu" id="deptDropdownMenu">
+                        </div>
+                    </div>
 
-          <select id="deptFilter" class="dept-filter">
-            <option value="">كل الأقسام</option>
-          </select>
-        </div>
+                    <!-- العنوان في النص -->
+                    <div class="section-header">
+                        <h2 class="section-title" id="currentDeptTitle">جميع الأساتذة</h2>
+                        <p class="section-subtitle" id="currentDeptSubtitle">أعضاء هيئة التدريس في الكلية</p>
+                    </div>
 
-        <div id="teachersGrid" class="teachers-grid"></div>
+                    <!-- العدد على اليمين -->
+                    <span class="teachers-count" id="teachersCount">0 أستاذ</span>
+                </div>
 
-        <div id="teachersEmpty" class="empty-state" style="display:none;">
-          <p>لا توجد بيانات أساتذة حالياً.</p>
-          <p style="color: var(--text-secondary); font-size: 0.95rem;">أضفهم من لوحة الإدارة.</p>
-        </div>
-      </div>
-    </section>
-  </main>
+                <!-- Teachers Grid -->
+                <div id="teachersGrid" class="teachers-grid">
+                </div>
 
-  <footer class="site-footer">
-    <a class="footer-credit" href="https://github.com/AhmedMagbool" target="_blank" rel="noopener">
-      Developer: Ahmed Magbool
-    </a>
-  </footer>
+                <!-- Empty State -->
+                <div id="teachersEmpty" class="empty-state" style="display: none;">
+                    <p>لا يوجد أساتذة مطابقين للبحث</p>
+                </div>
+                
+            </div>
+        </section>
+    </main>
 
-  <script type="module" src="teachers.js?v=5000"></script>
+    <footer class="site-footer">
+        <a class="footer-credit" href="https://github.com/AhmedMagbool" target="_blank" rel="noopener">
+            Developer: Ahmed Magbool
+        </a>
+    </footer>
+
+    <script type="module" src="teachers.js"></script>
 </body>
 </html>

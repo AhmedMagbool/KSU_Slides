@@ -7,28 +7,26 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-     <nav class="navbar">
-    <div class="container">
-      <div class="nav-brand">
-        <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <span class="brand-name"><a href="./index.html">UniCourse</a></span>
+            </div>
 
-        <span class="brand-name"><a href="./index.html">UniCourse</a></span>
-      </div>
-
-      <ul class="nav-menu">
-        <li><a href="index.html" class="nav-link active">المواد</a></li>
-        <li><a href="./teachers.html" class="nav-link">اعضاء هيئة التدريس</a></li>
-        <li><a href="schedule.html" class="nav-link">منشئ الجدول</a></li>
-        <li><a href="admin.html" class="nav-link" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">لوحة الإدارة</a></li>
-      </ul>
-    </div>
-  </nav>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">المواد</a></li>
+                <li><a href="./teachers.html" class="nav-link">اعضاء هيئة التدريس</a></li>
+                <li><a href="admin.html" class="nav-link" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">لوحة الإدارة</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <main>
         <section class="hero-section">
@@ -51,66 +49,82 @@
 
         <section class="courses-section">
             <div class="container">
-                <!-- Updated section title -->
-                <div class="section-header">
+              
+                <!-- Filter Container - ثابت دائماً -->
+                <div class="filter-container">
+                    <div class="category-filter">
+                        <button class="filter-dropdown-btn" id="categoryDropdownBtn">
+                            <span id="selectedCategoryText">كل المواد</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="filter-dropdown-menu" id="categoryDropdownMenu">
+                            <button class="filter-option active" data-category="all">كل المواد</button>
+                            <button class="filter-option" data-category="general">مواد الإعداد العام</button>
+                            <button class="filter-option" data-category="cs">مواد علوم الحاسب</button>
+                            <button class="filter-option" data-category="is">مواد نظم المعلومات</button>
+                            <button class="filter-option" data-category="islamic">مواد السلم</button>
+                            <button class="filter-option" data-category="management">مواد الإدارة</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- General Section -->
+                <div class="section-header" id="generalSection" data-category="general">
                     <h2 class="section-title">مواد الإعداد العام</h2>
                     <p class="section-subtitle">المواد الأساسية والمتطلبات العامة</p>
                 </div>
                 
-                <div id="generalCoursesGrid" class="courses-grid">
-                    <!-- General courses will be loaded here -->
+                <div id="generalCoursesGrid" class="courses-grid" data-category="general">
                 </div>
 
-                <!-- Added Computer Science courses section -->
-                <div class="section-header" style="margin-top: 4rem;">
+                <!-- Computer Science Section -->
+                <div class="section-header category-section" id="csSection" data-category="cs" style="margin-top: 4rem;">
                     <h2 class="section-title">مواد علوم الحاسب</h2>
                     <p class="section-subtitle">المواد التخصصية في علوم الحاسب</p>
                 </div>
                 
-                <div id="csCoursesGrid" class="courses-grid">
-                    <!-- Computer Science courses will be loaded here -->
+                <div id="csCoursesGrid" class="courses-grid category-section" data-category="cs">
                 </div>
 
-                <!-- Added Information Systems courses section -->
-                <div class="section-header" style="margin-top: 4rem;">
+                <!-- Information Systems Section -->
+                <div class="section-header category-section" id="isSection" data-category="is" style="margin-top: 4rem;">
                     <h2 class="section-title">مواد نظم المعلومات</h2>
                     <p class="section-subtitle">المواد التخصصية في نظم المعلومات</p>
                 </div>
                 
-                <div id="isCoursesGrid" class="courses-grid">
-                    <!-- Information Systems courses will be loaded here -->
+                <div id="isCoursesGrid" class="courses-grid category-section" data-category="is">
                 </div>
 
-
-                  <div class="section-header" style="margin-top: 4rem;">
+                <!-- Islamic Section -->
+                <div class="section-header category-section" id="islamicSection" data-category="islamic" style="margin-top: 4rem;">
                     <h2 class="section-title">مواد السلم</h2>
                     <p class="section-subtitle">المواد الاساسية في السلم</p>
                 </div>
                 
-                <div id="islamicCoursesGrid" class="courses-grid">
-                    <!-- Information Systems courses will be loaded here -->
+                <div id="islamicCoursesGrid" class="courses-grid category-section" data-category="islamic">
                 </div>
                
-                     <div class="section-header" style="margin-top: 4rem;">
+                <!-- Management Section -->
+                <div class="section-header category-section" id="managementSection" data-category="management" style="margin-top: 4rem;">
                     <h2 class="section-title">مواد الادارة</h2>
                     <p class="section-subtitle">المواد المطلوبة في الادارة</p>
                 </div>  
                 
-                <div id="MangamentCoursesGrid" class="courses-grid">
-                    <!-- Information Systems courses will be loaded here -->
+                <div id="MangamentCoursesGrid" class="courses-grid category-section" data-category="management">
                 </div>
                 
             </div>
-            
         </section>
     </main>
 
-  <footer class="site-footer">
-    <a class="footer-credit" href="https://github.com/AhmedMagbool" target="_blank" rel="noopener">
-      Developer: Ahmed Magbool
-    </a>
-  </footer>
+    <footer class="site-footer">
+        <a class="footer-credit" href="https://github.com/AhmedMagbool" target="_blank" rel="noopener">
+            Developer: Ahmed Magbool
+        </a>
+    </footer>
 
-<script type="module" src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
