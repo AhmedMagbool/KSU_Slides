@@ -665,6 +665,7 @@ const teacherOffice = document.getElementById("teacherOffice");
 const teacherPhone = document.getElementById("teacherPhone");
 const teacherOfficeHours = document.getElementById("teacherOfficeHours");
 const teacherPhotoUrl = document.getElementById("teacherPhotoUrl");
+const teacherUnimakeUrl = document.getElementById("teacherUnimakeUrl");
 const teacherSubmitBtn = document.getElementById("teacherSubmitBtn");
 const teacherCancelEdit = document.getElementById("teacherCancelEdit");
 const teachersList = document.getElementById("teachersList");
@@ -708,6 +709,9 @@ function renderTeachersList(obj) {
             <span>التقييم: ${t.ratingPercent ? t.ratingPercent + "%" : "غير محدد"}</span>
             <span>-</span>
             <span>الساعات: ${escapeHtml(t.officeHours || "غير محددة")}</span>
+            <span>-</span>
+<span>${t.unimakeUrl ? "رابط التقييم: موجود" : "رابط التقييم: غير مضاف"}</span>
+
           </div>
         </div>
 
@@ -747,7 +751,7 @@ window.editTeacher = function editTeacher(id) {
   teacherPhone.value = t.phone || "";
   teacherOfficeHours.value = t.officeHours || "";
   teacherPhotoUrl.value = t.photo || "";
-
+  teacherUnimakeUrl.value = t.unimakeUrl || "";
   teacherSubmitBtn.textContent = "تحديث بيانات الدكتور";
   teacherCancelEdit.style.display = "inline-flex";
 };
@@ -760,6 +764,7 @@ function resetTeacherForm() {
   if (teacherPhotoText) teacherPhotoText.textContent = "اختر صورة للرفع";
   if (teacherOfficeHours) teacherOfficeHours.value = "";
   if (teacherRating) teacherRating.value = "";
+  if (teacherUnimakeUrl) teacherUnimakeUrl.value = "";
   teacherSubmitBtn.textContent = "إضافة الدكتور";
   teacherCancelEdit.style.display = "none";
 }
@@ -790,6 +795,11 @@ window.deleteTeacher = async function deleteTeacher(id) {
 
 teacherForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  function normalizeUrl(url) {
+  const u = String(url || "").trim();
+  if (!u) return "";
+  return /^https?:\/\//i.test(u) ? u : `https://${u}`;
+}
 
   const id = teacherId.value.trim();
   const ratingValue = parseInt(teacherRating.value.trim()) || 0;
@@ -803,6 +813,8 @@ teacherForm.addEventListener("submit", async (e) => {
     officeHours: teacherOfficeHours.value.trim(),
     ratingPercent: Math.min(100, Math.max(0, ratingValue)),
     photo: teacherPhotoUrl.value.trim(),
+    unimakeUrl: normalizeUrl(teacherUnimakeUrl.value),
+
   };
 
   if (!payload.name || !payload.dept || !payload.email || !payload.office || !payload.phone) {

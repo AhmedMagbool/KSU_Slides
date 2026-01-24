@@ -154,11 +154,19 @@ function cardHtml(t) {
 
     const p = Number(t.ratingPercent || 0);
     const count = Number(t.ratingCount || 0);
+    const unimakeUrl = (t.unimakeUrl || "").trim();
+    const hasUnimake = /^https?:\/\//i.test(unimakeUrl);
 
-    const rateBadge =
-        p > 0
-            ? `<span class="rate-badge">${Math.round(clamp(p, 0, 100))}%${count > 0 ? ` (${Math.max(0, Math.floor(count))})` : ""}</span>`
-            : `<span class="rate-badge empty">—</span>`;
+    const rateText =
+  p > 0
+    ? `${Math.round(clamp(p, 0, 100))}%${count > 0 ? ` (${Math.max(0, Math.floor(count))})` : ""}`
+    : "—";
+
+const rateBadge =
+  hasUnimake
+    ? `<a class="rate-badge clickable" href="${escapeAttr(unimakeUrl)}" target="_blank" rel="noopener noreferrer" title="فتح التقييم في UniMake">${escapeHtml(rateText)}</a>`
+    : `<span class="rate-badge ${p > 0 ? "" : "empty"}" title="${p > 0 ? "رابط التقييم غير مضاف" : "لا يوجد تقييم"}">${escapeHtml(rateText)}</span>`;
+
 
     const officeHoursHtml = officeHours
         ? `<div class="meta-row"><span class="meta-icon">🕒</span> <b>الساعات المكتبية:</b> ${escapeHtml(officeHours).replace(/\n/g, "<br>")}</div>`

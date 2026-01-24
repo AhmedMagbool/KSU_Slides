@@ -494,3 +494,10 @@
         transform: none;
     }
 }
+.rate-badge.clickable{
+  text-decoration: none;
+  cursor: pointer;
+}
+.rate-badge.clickable:hover{
+  filter: brightness(1.05);
+}
