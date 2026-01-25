@@ -36,14 +36,14 @@ body {
   padding: 0 2rem;
 }
 
-/* Navbar */
+/* ===== Navbar ===== */
 .navbar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   padding: 1rem 0;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   backdrop-filter: blur(10px);
 }
 
@@ -51,6 +51,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .nav-brand {
@@ -59,27 +60,21 @@ body {
   gap: 0.75rem;
 }
 
-.logo-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--gradient-primary);
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.logo-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
 .brand-name a {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-primary);
   text-decoration: none;
+}
+
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
 }
 
 .nav-menu {
@@ -112,7 +107,7 @@ body {
   background: var(--gradient-primary);
 }
 
-/* Hero Section */
+/* ===== Hero Section ===== */
 .hero-section {
   padding: 4rem 0 3rem;
   text-align: center;
@@ -134,7 +129,7 @@ body {
   margin-bottom: 2.5rem;
 }
 
-/* Search Box */
+/* ===== Search Box ===== */
 .search-box {
   max-width: 600px;
   margin: 0 auto;
@@ -185,41 +180,91 @@ body {
   background: linear-gradient(135deg, #5568d3 0%, #6540a2 100%);
 }
 
-/* Courses Section */
+/* ===== Courses Section ===== */
 .courses-section {
   padding: 3rem 0 4rem;
 }
 
-/* Section Header - العنوان في النص والقائمة على اليسار */
-.section-header {
-  text-align: center;
-  margin-bottom: 2rem;
+.courses-section .container {
   position: relative;
-  padding: 0 1rem;
 }
 
-.section-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+/* ===== Section Header with Filter ===== */
+/* ===== Section Header Wrapper ===== */
+.section-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    position: relative;
+    padding: 0 140px;
 }
 
-.section-subtitle {
-  color: var(--text-secondary);
-  font-size: 1rem;
+.section-header-wrapper .section-header {
+    flex: 1;
+    text-align: center;
+    margin-bottom: 0;
 }
 
-/* Category Filter - ثابت على يسار العنوان */
-.section-header .category-filter {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
+.section-header-wrapper .category-filter {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
 }
 
+.section-header-wrapper .items-count {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-header-wrapper {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0;
+    }
+    
+    .section-header-wrapper .category-filter,
+    .section-header-wrapper .items-count {
+        position: relative;
+        left: auto;
+        right: auto;
+        top: auto;
+        transform: none;
+    }
+    
+  .section-header-wrapper .category-filter {
+    order: 1;
+}
+
+.section-header-wrapper .section-header {
+    order: 2;
+}
+
+.section-header-wrapper .items-count {
+    order: 3;
+}
+
+}
+/* ===== Category Filter ===== */
 .category-filter {
   position: relative;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
 }
+
+/* Filter داخل section-header - على اليسار */
+/* Filter - في المنتصف دائماً */
+
 
 .filter-dropdown-btn {
   display: flex;
@@ -262,7 +307,7 @@ body {
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.2s ease;
-  z-index: 100;
+  z-index: 9999;
 }
 
 .filter-dropdown-menu.show {
@@ -295,7 +340,7 @@ body {
   color: white;
 }
 
-/* Courses Grid */
+/* ===== Courses Grid ===== */
 .courses-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -309,6 +354,8 @@ body {
   padding: 2rem;
   transition: all 0.3s;
   cursor: pointer;
+  animation: fadeIn 0.5s ease-out forwards;
+  scroll-margin-top: 120px;
 }
 
 .course-card:hover {
@@ -316,6 +363,19 @@ body {
   border-color: var(--primary);
   box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
 }
+
+.course-card.search-hit {
+  outline: 2px solid var(--primary);
+  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.course-card:nth-child(1) { animation-delay: 0.1s; }
+.course-card:nth-child(2) { animation-delay: 0.2s; }
+.course-card:nth-child(3) { animation-delay: 0.3s; }
+.course-card:nth-child(4) { animation-delay: 0.4s; }
+.course-card:nth-child(5) { animation-delay: 0.5s; }
+.course-card:nth-child(6) { animation-delay: 0.6s; }
 
 .course-header {
   display: flex;
@@ -376,7 +436,7 @@ body {
   color: var(--primary);
 }
 
-/* === الأزرار (تصفح الملفات + تحميل) === */
+/* ===== Course Actions ===== */
 .course-actions {
   display: flex;
   justify-content: space-between;
@@ -384,7 +444,6 @@ body {
   margin-top: 1rem;
 }
 
-/* زر تحميل */
 .course-actions .download-btn {
   flex: 1;
   background: var(--surface-light);
@@ -413,7 +472,6 @@ body {
   transform: translateY(-2px);
 }
 
-/* زر تصفح الملفات */
 .course-actions .browse-btn {
   flex: 1;
   background: var(--gradient-primary);
@@ -444,7 +502,7 @@ body {
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-/* ===== Fix: Global Buttons (.btn) used in admin + course-files page ===== */
+/* ===== Global Buttons ===== */
 .btn {
   flex: 0 0 auto;
   padding: 0.875rem 1.5rem;
@@ -486,104 +544,48 @@ body {
   transform: translateY(-2px);
 }
 
-/* Footer */
-.footer {
-  background: var(--surface);
+/* ===== Footer ===== */
+.site-footer {
+  margin-top: 3rem;
+  padding: 1.25rem 0;
   border-top: 1px solid var(--border);
-  padding: 2rem 0;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
   text-align: center;
-  margin-top: 4rem;
 }
 
-.footer p {
+.footer-credit {
   color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  opacity: 0.9;
+  transition: 0.2s;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .nav-menu {
-    display: none;
-  }
-
-  .hero-title {
-    font-size: 2rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-
-  .courses-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .search-box {
-    flex-direction: column;
-  }
-
-  .course-actions {
-    flex-direction: column;
-  }
-  
-  /* Filter responsive */
-  .section-header .category-filter {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    margin-top: 1rem;
-    display: flex;
-    justify-content: center;
-  }
+.footer-credit:hover {
+  color: var(--primary);
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ===== Form Select Fix ===== */
+.form-group {
+  position: relative;
 }
 
-.course-card {
-  animation: fadeIn 0.5s ease-out forwards;
-}
-
-.course-card:nth-child(1) { animation-delay: 0.1s; }
-.course-card:nth-child(2) { animation-delay: 0.2s; }
-.course-card:nth-child(3) { animation-delay: 0.3s; }
-.course-card:nth-child(4) { animation-delay: 0.4s; }
-.course-card:nth-child(5) { animation-delay: 0.5s; }
-.course-card:nth-child(6) { animation-delay: 0.6s; }
-
-/* ===== Select: remove native arrow completely ===== */
 .form-group select {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
   background-image: none !important;
   padding-right: 3.25rem !important;
-  position: relative;
-}
-
-.form-group {
-  position: relative;
-}
-
-.form-group select {
   background-color: var(--surface) !important;
 }
 
-.form-group select::ms-expand {
+.form-group select::-ms-expand {
   display: none;
-}
-
-.form-group.has-select {
-  position: relative;
 }
 
 .form-group.has-select::after {
@@ -601,24 +603,27 @@ body {
   opacity: 0.9;
 }
 
-.nav-toggle {
-  display: none;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  border-radius: 10px;
-  padding: 0.5rem;
-  cursor: pointer;
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Mobile Responsive */
+/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
   .container {
     padding: 0 1rem;
   }
 
+  /* Navbar */
   .nav-toggle {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
   }
@@ -626,16 +631,18 @@ body {
   .nav-menu {
     display: none;
     position: absolute;
-    top: 70px;
-    right: 1rem;
-    left: 1rem;
+    top: 100%;
+    right: 0;
+    left: 0;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 0.75rem;
+    border-radius: 0 0 14px 14px;
+    border-top: none;
+    padding: 1rem;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
     z-index: 999;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   }
 
   .nav-menu.open {
@@ -643,8 +650,11 @@ body {
   }
 
   .nav-link {
-    padding: 0.75rem 0.75rem;
+    display: block;
+    padding: 0.85rem 1rem;
     border-radius: 10px;
+    text-align: center;
+    font-size: 1rem;
   }
 
   .nav-link.active::after {
@@ -656,35 +666,67 @@ body {
     color: var(--primary);
   }
 
+  /* Hero */
   .hero-section {
-    padding: 2.25rem 0 1.5rem;
+    padding: 2rem 0 1.5rem;
   }
 
   .hero-title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+    line-height: 1.4;
   }
 
   .hero-subtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
     margin-bottom: 1.5rem;
   }
 
+  /* Search */
   .search-box {
     flex-direction: row;
     border-radius: 0.9rem;
   }
 
   .search-input {
-    padding: 0.9rem 1rem;
-    font-size: 0.95rem;
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
   }
 
   .search-btn {
-    padding: 0.9rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
     white-space: nowrap;
   }
 
+  /* Section Header */
+  .section-header {
+    margin-bottom: 1.5rem;
+    padding-top: 0;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* Filter - تحت العنوان في الموبايل */
+.section-header.category-section {
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+  .filter-dropdown-btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 140px;
+    justify-content: center;
+  }
+
+  /* Courses Grid */
   .courses-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -720,7 +762,7 @@ body {
   }
 
   .course-actions {
-    flex-direction: row !important;
+    flex-direction: row;
     gap: 0.75rem;
   }
 
@@ -733,19 +775,12 @@ body {
   }
 }
 
-.course-card {
-  scroll-margin-top: 120px;
-}
-
-.course-card.search-hit {
-  outline: 2px solid var(--primary);
-  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
-  transition: 0.2s;
-}
-
-/* موبايل صغير جدا */
+/* ===== SMALL MOBILE ===== */
 @media (max-width: 420px) {
+  .hero-title {
+    font-size: 1.4rem;
+  }
+
   .search-btn span {
     display: none;
   }
@@ -760,131 +795,14 @@ body {
     font-size: 0.9rem;
     padding: 0.8rem 0.9rem;
   }
-}
 
-.site-footer {
-  margin-top: 3rem;
-  padding: 1.25rem 0;
-  border-top: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  text-align: center;
-}
-
-.footer-credit {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-  opacity: 0.9;
-  transition: 0.2s;
-}
-
-.footer-credit:hover {
-  color: var(--primary);
-  opacity: 1;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-/* Filter Container - على يسار العنوان */
-.filter-container {
-    position: absolute;
-    left: 2rem;
-    top: 0;
-    z-index: 100;
-}
-
-.courses-section .container {
-    position: relative;
-}
-.category-filter {
-    position: relative;
-}
-
-.filter-dropdown-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  .filter-dropdown-btn {
     padding: 0.6rem 1rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    font-family: "Cairo", sans-serif;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.filter-dropdown-btn:hover {
-    border-color: var(--primary);
-}
-
-.filter-dropdown-btn svg {
-    transition: transform 0.2s ease;
-}
-
-.filter-dropdown-btn.open svg {
-    transform: rotate(180deg);
-}
-
-.filter-dropdown-menu {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 0;
-    min-width: 180px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    padding: 0.5rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.2s ease;
-    z-index: 9999;
-}
-
-.filter-dropdown-menu.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.filter-option {
-    display: block;
-    width: 100%;
-    padding: 0.6rem 0.8rem;
-    background: none;
-    border: none;
-    border-radius: 0.5rem;
-    color: var(--text-primary);
     font-size: 0.85rem;
-    font-family: "Cairo", sans-serif;
-    text-align: right;
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
+    min-width: 120px;
+  }
 
-.filter-option:hover {
-    background: rgba(102, 126, 234, 0.1);
-}
-
-.filter-option.active {
-    background: var(--primary);
-    color: white;
-}
-
-/* Section Header */
-.section-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .filter-container {
-        justify-content: center;
-    }
+  .section-title {
+    font-size: 1.3rem;
+  }
 }

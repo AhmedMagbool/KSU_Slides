@@ -41,82 +41,80 @@
                             <circle cx="11" cy="11" r="8"></circle>
                             <path d="m21 21-4.35-4.35"></path>
                         </svg>
-                        بحث
+                        <span>بحث</span>
                     </button>
                 </div>
             </div>
         </section>
 
-        <section class="courses-section">
-            <div class="container">
-              
-                <!-- Filter Container - ثابت دائماً -->
-                <div class="filter-container">
-                    <div class="category-filter">
-                        <button class="filter-dropdown-btn" id="categoryDropdownBtn">
-                            <span id="selectedCategoryText">كل المواد</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                        <div class="filter-dropdown-menu" id="categoryDropdownMenu">
-                            <button class="filter-option active" data-category="all">كل المواد</button>
-                            <button class="filter-option" data-category="general">مواد الإعداد العام</button>
-                            <button class="filter-option" data-category="cs">مواد علوم الحاسب</button>
-                            <button class="filter-option" data-category="is">مواد نظم المعلومات</button>
-                            <button class="filter-option" data-category="islamic">مواد السلم</button>
-                            <button class="filter-option" data-category="management">مواد الإدارة</button>
-                        </div>
-                    </div>
+<section class="courses-section">
+    <div class="container">
+      
+        <!-- Section Header with Filter -->
+        <div class="section-header-wrapper">
+            <div class="category-filter">
+                <button class="filter-dropdown-btn" id="categoryDropdownBtn">
+                    <span id="selectedCategoryText">كل المواد</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="filter-dropdown-menu" id="categoryDropdownMenu">
+                    <button class="filter-option active" data-category="all">كل المواد</button>
+                    <button class="filter-option" data-category="general">مواد الإعداد العام</button>
+                    <button class="filter-option" data-category="cs">مواد علوم الحاسب</button>
+                    <button class="filter-option" data-category="is">مواد نظم المعلومات</button>
+                    <button class="filter-option" data-category="islamic">مواد السلم</button>
+                    <button class="filter-option" data-category="management">مواد الإدارة</button>
                 </div>
-
-                <!-- General Section -->
-                <div class="section-header" id="generalSection" data-category="general">
-                    <h2 class="section-title">مواد الإعداد العام</h2>
-                    <p class="section-subtitle">المواد الأساسية والمتطلبات العامة</p>
-                </div>
-                
-                <div id="generalCoursesGrid" class="courses-grid" data-category="general">
-                </div>
-
-                <!-- Computer Science Section -->
-                <div class="section-header category-section" id="csSection" data-category="cs" style="margin-top: 4rem;">
-                    <h2 class="section-title">مواد علوم الحاسب</h2>
-                    <p class="section-subtitle">المواد التخصصية في علوم الحاسب</p>
-                </div>
-                
-                <div id="csCoursesGrid" class="courses-grid category-section" data-category="cs">
-                </div>
-
-                <!-- Information Systems Section -->
-                <div class="section-header category-section" id="isSection" data-category="is" style="margin-top: 4rem;">
-                    <h2 class="section-title">مواد نظم المعلومات</h2>
-                    <p class="section-subtitle">المواد التخصصية في نظم المعلومات</p>
-                </div>
-                
-                <div id="isCoursesGrid" class="courses-grid category-section" data-category="is">
-                </div>
-
-                <!-- Islamic Section -->
-                <div class="section-header category-section" id="islamicSection" data-category="islamic" style="margin-top: 4rem;">
-                    <h2 class="section-title">مواد السلم</h2>
-                    <p class="section-subtitle">المواد الاساسية في السلم</p>
-                </div>
-                
-                <div id="islamicCoursesGrid" class="courses-grid category-section" data-category="islamic">
-                </div>
-               
-                <!-- Management Section -->
-                <div class="section-header category-section" id="managementSection" data-category="management" style="margin-top: 4rem;">
-                    <h2 class="section-title">مواد الادارة</h2>
-                    <p class="section-subtitle">المواد المطلوبة في الادارة</p>
-                </div>  
-                
-                <div id="MangamentCoursesGrid" class="courses-grid category-section" data-category="management">
-                </div>
-                
             </div>
-        </section>
+
+            <div class="section-header" id="generalSection" data-category="general">
+                <h2 class="section-title" id="currentSectionTitle">مواد الإعداد العام</h2>
+                <p class="section-subtitle" id="currentSectionSubtitle">المواد الأساسية والمتطلبات العامة</p>
+            </div>
+
+            <span class="items-count" id="coursesCount">0 مادة</span>
+        </div>
+        
+        <!-- General Courses Grid -->
+        <div id="generalCoursesGrid" class="courses-grid" data-category="general">
+        </div>
+
+        <!-- Computer Science Section -->
+        <div class="section-header category-section" id="csSection" data-category="cs">
+            <h2 class="section-title">مواد علوم الحاسب</h2>
+            <p class="section-subtitle">المواد التخصصية في علوم الحاسب</p>
+        </div>
+        <div id="csCoursesGrid" class="courses-grid category-section" data-category="cs">
+        </div>
+
+        <!-- Information Systems Section -->
+        <div class="section-header category-section" id="isSection" data-category="is">
+            <h2 class="section-title">مواد نظم المعلومات</h2>
+            <p class="section-subtitle">المواد التخصصية في نظم المعلومات</p>
+        </div>
+        <div id="isCoursesGrid" class="courses-grid category-section" data-category="is">
+        </div>
+
+        <!-- Islamic Section -->
+        <div class="section-header category-section" id="islamicSection" data-category="islamic">
+            <h2 class="section-title">مواد السلم</h2>
+            <p class="section-subtitle">المواد الاساسية في السلم</p>
+        </div>
+        <div id="islamicCoursesGrid" class="courses-grid category-section" data-category="islamic">
+        </div>
+       
+        <!-- Management Section -->
+        <div class="section-header category-section" id="managementSection" data-category="management">
+            <h2 class="section-title">مواد الادارة</h2>
+            <p class="section-subtitle">المواد المطلوبة في الادارة</p>
+        </div>  
+        <div id="MangamentCoursesGrid" class="courses-grid category-section" data-category="management">
+        </div>
+        
+    </div>
+</section>
     </main>
 
     <footer class="site-footer">

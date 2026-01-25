@@ -163,10 +163,14 @@ function cardHtml(t) {
     : "—";
 
 const rateBadge =
-  hasUnimake
-    ? `<a class="rate-badge clickable" href="${escapeAttr(unimakeUrl)}" target="_blank" rel="noopener noreferrer" title="فتح التقييم في UniMake">${escapeHtml(rateText)}</a>`
-    : `<span class="rate-badge ${p > 0 ? "" : "empty"}" title="${p > 0 ? "رابط التقييم غير مضاف" : "لا يوجد تقييم"}">${escapeHtml(rateText)}</span>`;
-
+    p > 0
+        ? `<a href="${unimakeUrl}" target="_blank" rel="noopener" class="rate-badge clickable" title="تقييم الدكتور">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            ${Math.round(clamp(p, 0, 100))}%${count > 0 ? ` (${Math.max(0, Math.floor(count))})` : ""}
+           </a>`
+        : `<span class="rate-badge empty">—</span>`;
 
     const officeHoursHtml = officeHours
         ? `<div class="meta-row"><span class="meta-icon">🕒</span> <b>الساعات المكتبية:</b> ${escapeHtml(officeHours).replace(/\n/g, "<br>")}</div>`

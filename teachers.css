@@ -259,7 +259,11 @@
     transform: translateY(-2px);
 }
 
+/* Rate Badge with Star */
 .rate-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     min-width: 64px;
     text-align: center;
     padding: 0.25rem 0.6rem;
@@ -271,9 +275,31 @@
     color: var(--primary);
 }
 
+.rate-badge svg {
+    flex-shrink: 0;
+    color: #fbbf24; /* لون ذهبي للنجمة */
+}
+
 .rate-badge.empty {
     background: transparent;
     color: var(--text-secondary);
+}
+
+.rate-badge.clickable {
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rate-badge.clickable:hover {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.rate-badge.clickable:hover svg {
+    color: white;
 }
 
 .empty-state {
@@ -493,11 +519,4 @@
         top: auto;
         transform: none;
     }
-}
-.rate-badge.clickable{
-  text-decoration: none;
-  cursor: pointer;
-}
-.rate-badge.clickable:hover{
-  filter: brightness(1.05);
 }

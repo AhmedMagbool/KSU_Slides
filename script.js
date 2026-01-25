@@ -2,6 +2,9 @@
 import { rtdb } from "./firebase-config.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
+let ALL_COURSES = [];
+let CURRENT_CATEGORY = "all";
+
 /* =========================
    Tiny Cache (localStorage)
 ========================= */
@@ -29,11 +32,15 @@ function cacheSet(key, value) {
 ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
   const cached = cacheGet("coursesIndex", 10 * 60 * 1000);
-  if (cached) renderCourses(cached);
+  if (cached) {
+    ALL_COURSES = Object.values(cached || {});
+    applyFiltersAndRender();
+  }
 
   await loadCourses();
 
   document.getElementById("searchBtn")?.addEventListener("click", handleSearch);
+  document.getElementById("searchInput")?.addEventListener("input", handleSearch);
   document.getElementById("searchInput")?.addEventListener("keyup", (e) => e.key === "Enter" && handleSearch());
 
   const navToggle = document.getElementById("navToggle");
@@ -43,7 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     navMenu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => navMenu.classList.remove("open")));
   }
 
-  // Initialize Category Filter
   initCategoryFilter();
 });
 
@@ -51,55 +57,174 @@ async function loadCourses() {
   try {
     let snap = await get(ref(rtdb, "coursesIndex"));
     let coursesData = {};
-    
+
     if (snap.exists()) {
       coursesData = snap.val();
     } else {
       snap = await get(ref(rtdb, "courses"));
-      if (snap.exists()) {
-        coursesData = snap.val();
-      }
+      if (snap.exists()) coursesData = snap.val();
     }
-    
+
     cacheSet("coursesIndex", coursesData);
-    renderCourses(coursesData);
-    
+
+    ALL_COURSES = Object.values(coursesData || {});
+    applyFiltersAndRender();
   } catch (err) {
     console.error("Error loading courses:", err);
   }
 }
 
 /* =========================
-   Render
+   Core: Apply filter + search then render
 ========================= */
-function renderCourses(coursesObj) {
+function applyFiltersAndRender() {
+  const q = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
+
+  // 1) category filter
+  let filtered = ALL_COURSES.filter((c) => {
+    const cat = (c.category || "general").trim();
+    return CURRENT_CATEGORY === "all" ? true : cat === CURRENT_CATEGORY;
+  });
+
+  // 2) search filter
+  if (q) {
+    filtered = filtered.filter((c) => {
+      const name = String(c.name || "").toLowerCase();
+      const code = String(c.code || "").toLowerCase();
+      return name.includes(q) || code.includes(q);
+    });
+  }
+
+  // Render
+  renderCoursesIntoGrids(filtered);
+
+  // Header (title/subtitle)
+  updateMainHeader(CURRENT_CATEGORY);
+
+  // Count (always from visible in selected category after search)
+  updateCoursesCount(filtered.length);
+
+  // Show/Hide sections (only for all vs single category)
+  toggleSectionsVisibility(CURRENT_CATEGORY);
+}
+
+/* =========================
+   Render into grids
+========================= */
+function renderCoursesIntoGrids(list) {
   const generalGrid = document.getElementById("generalCoursesGrid");
   const csGrid = document.getElementById("csCoursesGrid");
   const isGrid = document.getElementById("isCoursesGrid");
   const islamicGrid = document.getElementById("islamicCoursesGrid");
   const managementGrid = document.getElementById("MangamentCoursesGrid");
-  
+
   if (generalGrid) generalGrid.innerHTML = "";
   if (csGrid) csGrid.innerHTML = "";
   if (isGrid) isGrid.innerHTML = "";
   if (islamicGrid) islamicGrid.innerHTML = "";
   if (managementGrid) managementGrid.innerHTML = "";
 
-  const arr = Object.values(coursesObj || {});
-  if (!arr.length) return;
-
-  arr.forEach((course) => {
+  list.forEach((course) => {
     const card = createCourseCard(course);
-    
-    if (course.category === "general" && generalGrid) generalGrid.appendChild(card);
-    else if (course.category === "cs" && csGrid) csGrid.appendChild(card);
-    else if (course.category === "is" && isGrid) isGrid.appendChild(card);
-    else if (course.category === "islamic" && islamicGrid) islamicGrid.appendChild(card);
-    else if (course.category === "management" && managementGrid) managementGrid.appendChild(card);
+    const cat = (course.category || "general").trim();
+
+    if (cat === "general" && generalGrid) generalGrid.appendChild(card);
+    else if (cat === "cs" && csGrid) csGrid.appendChild(card);
+    else if (cat === "is" && isGrid) isGrid.appendChild(card);
+    else if (cat === "islamic" && islamicGrid) islamicGrid.appendChild(card);
+    else if (cat === "management" && managementGrid) managementGrid.appendChild(card);
     else if (generalGrid) generalGrid.appendChild(card);
   });
 }
 
+/* =========================
+   Count
+========================= */
+function updateCoursesCount(n) {
+  const el = document.getElementById("coursesCount");
+  if (!el) return;
+  el.textContent = `${Math.max(0, Number(n) || 0)} مادة`;
+}
+
+/* =========================
+   Header text
+   - IMPORTANT: "all" should NOT show "جميع المواد" as title.
+   - It should go back to default (general) like your first design.
+========================= */
+function updateMainHeader(category) {
+  const title = document.getElementById("currentSectionTitle");
+  const sub = document.getElementById("currentSectionSubtitle");
+  if (!title || !sub) return;
+
+  const MAP = {
+    // all -> default first section header
+    all: { t: "مواد الإعداد العام", s: "المواد الأساسية والمتطلبات العامة" },
+    general: { t: "مواد الإعداد العام", s: "المواد الأساسية والمتطلبات العامة" },
+    cs: { t: "مواد علوم الحاسب", s: "المواد التخصصية في علوم الحاسب" },
+    is: { t: "مواد نظم المعلومات", s: "المواد التخصصية في نظم المعلومات" },
+    islamic: { t: "مواد السلم", s: "المواد الأساسية في السلم" },
+    management: { t: "مواد الإدارة", s: "المواد المطلوبة في الإدارة" },
+  };
+
+  const v = MAP[category] || MAP.all;
+  title.textContent = v.t;
+  sub.textContent = v.s;
+}
+
+/* =========================
+   Show/Hide sections
+   - when all: show all section headers + grids
+   - when specific: hide all headers except main header, show only its grid
+========================= */
+function toggleSectionsVisibility(category) {
+  const generalSection = document.getElementById("generalSection");
+  const generalGrid = document.getElementById("generalCoursesGrid");
+
+  const csSection = document.getElementById("csSection");
+  const csGrid = document.getElementById("csCoursesGrid");
+
+  const isSection = document.getElementById("isSection");
+  const isGrid = document.getElementById("isCoursesGrid");
+
+  const islamicSection = document.getElementById("islamicSection");
+  const islamicGrid = document.getElementById("islamicCoursesGrid");
+
+  const managementSection = document.getElementById("managementSection");
+  const managementGrid = document.getElementById("MangamentCoursesGrid");
+
+  const show = (el) => { if (el) el.style.display = ""; };
+  const hide = (el) => { if (el) el.style.display = "none"; };
+
+  const allBlocks = [
+    generalSection, generalGrid,
+    csSection, csGrid,
+    isSection, isGrid,
+    islamicSection, islamicGrid,
+    managementSection, managementGrid
+  ];
+
+  if (category === "all") {
+    allBlocks.forEach(show);
+    return;
+  }
+
+  // Hide everything
+  allBlocks.forEach(hide);
+
+  // Always show main header section (generalSection holds it in your HTML)
+  show(generalSection);
+
+  // Show only selected grid (no extra headers under)
+  if (category === "general") show(generalGrid);
+  if (category === "cs") show(csGrid);
+  if (category === "is") show(isGrid);
+  if (category === "islamic") show(islamicGrid);
+  if (category === "management") show(managementGrid);
+}
+
+/* =========================
+   Course Card
+========================= */
 function countFiles(filesObj) {
   let count = 0;
   for (const folder of Object.values(filesObj || {})) {
@@ -161,38 +286,60 @@ window.openCourse = function (code) {
   window.location.href = `course-files.html?code=${encodeURIComponent(code)}`;
 };
 
+/* =========================
+   Search
+========================= */
 function handleSearch() {
-  const query = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
-  const allCards = Array.from(document.querySelectorAll(".course-card"));
-  allCards.forEach((c) => c.classList.remove("search-hit"));
-
-  if (!query) {
-    allCards.forEach((c) => (c.style.display = ""));
-    // Reset sections visibility
-    document.querySelectorAll('.category-section').forEach(s => s.style.display = '');
-    document.getElementById('generalSection').style.display = '';
-    document.getElementById('generalCoursesGrid').style.display = '';
-    return;
-  }
-
-  const matches = [];
-  allCards.forEach((card) => {
-    const name = (card.querySelector(".course-name")?.textContent || "").toLowerCase();
-    const code = (card.querySelector(".course-code")?.textContent || "").toLowerCase();
-    const isMatch = name.includes(query) || code.includes(query);
-    card.style.display = isMatch ? "" : "none";
-    if (isMatch) matches.push(card);
-  });
-
-  if (!matches.length) return;
-
-  const first = matches[0];
-  first.classList.add("search-hit");
-  const y = first.getBoundingClientRect().top + window.pageYOffset;
-  window.scrollTo({ top: y - 120, behavior: "smooth" });
-  setTimeout(() => first.classList.remove("search-hit"), 2000);
+  applyFiltersAndRender();
 }
 
+/* =========================
+   Category Filter (Dropdown)
+========================= */
+function initCategoryFilter() {
+  const categoryBtn = document.getElementById("categoryDropdownBtn");
+  const categoryMenu = document.getElementById("categoryDropdownMenu");
+  const categoryText = document.getElementById("selectedCategoryText");
+  const filterOptions = document.querySelectorAll(".filter-option");
+
+  if (!categoryBtn || !categoryMenu) return;
+
+  categoryBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    categoryBtn.classList.toggle("open");
+    categoryMenu.classList.toggle("show");
+  });
+
+  document.addEventListener("click", () => {
+    categoryBtn.classList.remove("open");
+    categoryMenu.classList.remove("show");
+  });
+
+  filterOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+      const category = option.dataset.category;
+
+      CURRENT_CATEGORY = category || "all";
+
+      // button text
+      if (categoryText) categoryText.textContent = option.textContent;
+
+      // active state
+      filterOptions.forEach((opt) => opt.classList.remove("active"));
+      option.classList.add("active");
+
+      // close dropdown
+      categoryBtn.classList.remove("open");
+      categoryMenu.classList.remove("show");
+
+      applyFiltersAndRender();
+    });
+  });
+}
+
+/* =========================
+   Utils
+========================= */
 function escapeQuotes(str) {
   return (str || "").replace(/'/g, "\\'").replace(/"/g, '\\"');
 }
@@ -203,99 +350,4 @@ function escapeHTML(str) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-}
-
-/* =========================
-   Category Filter
-========================= */
-function initCategoryFilter() {
-  const categoryBtn = document.getElementById('categoryDropdownBtn');
-  const categoryMenu = document.getElementById('categoryDropdownMenu');
-  const categoryText = document.getElementById('selectedCategoryText');
-  const filterOptions = document.querySelectorAll('.filter-option');
-
-  if (!categoryBtn || !categoryMenu) return;
-
-  // Toggle dropdown
-  categoryBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    categoryBtn.classList.toggle('open');
-    categoryMenu.classList.toggle('show');
-  });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', () => {
-    categoryBtn.classList.remove('open');
-    categoryMenu.classList.remove('show');
-  });
-
-  // Filter options click
-  filterOptions.forEach(option => {
-    option.addEventListener('click', () => {
-      const category = option.dataset.category;
-      
-      // Update button text
-      categoryText.textContent = option.textContent;
-      
-      // Update active state
-      filterOptions.forEach(opt => opt.classList.remove('active'));
-      option.classList.add('active');
-      
-      // Close dropdown
-      categoryBtn.classList.remove('open');
-      categoryMenu.classList.remove('show');
-      
-      // Filter courses
-      filterCoursesByCategory(category);
-    });
-  });
-}
-
-function filterCoursesByCategory(category) {
-  // All sections
-  const generalSection = document.getElementById('generalSection');
-  const generalGrid = document.getElementById('generalCoursesGrid');
-  const csSection = document.getElementById('csSection');
-  const csGrid = document.getElementById('csCoursesGrid');
-  const isSection = document.getElementById('isSection');
-  const isGrid = document.getElementById('isCoursesGrid');
-  const islamicSection = document.getElementById('islamicSection');
-  const islamicGrid = document.getElementById('islamicCoursesGrid');
-  const managementSection = document.getElementById('managementSection');
-  const managementGrid = document.getElementById('MangamentCoursesGrid');
-
-  // Hide all first
-  const allSections = [
-    generalSection, generalGrid,
-    csSection, csGrid,
-    isSection, isGrid,
-    islamicSection, islamicGrid,
-    managementSection, managementGrid
-  ];
-
-  if (category === 'all') {
-    // Show all
-    allSections.forEach(el => { if (el) el.style.display = ''; });
-  } else {
-    // Hide all
-    allSections.forEach(el => { if (el) el.style.display = 'none'; });
-    
-    // Show selected category
-    if (category === 'general') {
-      if (generalSection) generalSection.style.display = '';
-      if (generalGrid) generalGrid.style.display = '';
-    } else if (category === 'cs') {
-      if (csSection) csSection.style.display = '';
-      if (csGrid) csGrid.style.display = '';
-    } else if (category === 'is') {
-      if (isSection) isSection.style.display = '';
-      if (isGrid) isGrid.style.display = '';
-    } else if (category === 'islamic') {
-      if (islamicSection) islamicSection.style.display = '';
-      if (islamicGrid) islamicGrid.style.display = '';
-    } else if (category === 'management') {
-      if (managementSection) managementSection.style.display = '';
-      if (managementGrid) managementGrid.style.display = '';
-    }
-  }
 }
