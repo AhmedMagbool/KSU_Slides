@@ -102,7 +102,7 @@ function applyFiltersAndRender() {
   updateMainHeader(CURRENT_CATEGORY);
 
   // Count (always from visible in selected category after search)
-  updateCoursesCount(filtered.length);
+updateCoursesCount(CURRENT_CATEGORY === "all" ? filtered.length : filtered.length);
 
   // Show/Hide sections (only for all vs single category)
   toggleSectionsVisibility(CURRENT_CATEGORY);
@@ -140,11 +140,45 @@ function renderCoursesIntoGrids(list) {
 /* =========================
    Count
 ========================= */
-function updateCoursesCount(n) {
+function updateCoursesCount(arg = "all") {
   const el = document.getElementById("coursesCount");
   if (!el) return;
-  el.textContent = `${Math.max(0, Number(n) || 0)} مادة`;
+
+  // لو انرسل رقم مباشر
+  if (typeof arg === "number") {
+    el.textContent = `${arg} مادة`;
+    return;
+  }
+
+  const category = arg;
+
+  if (category === "all") {
+    const visibleCards = Array.from(document.querySelectorAll(".course-card"))
+      .filter(card => card.style.display !== "none");
+    el.textContent = `${visibleCards.length} مادة`;
+    return;
+  }
+
+  const gridMap = {
+    general: "generalCoursesGrid",
+    cs: "csCoursesGrid",
+    is: "isCoursesGrid",
+    islamic: "islamicCoursesGrid",
+    management: "MangamentCoursesGrid",
+  };
+
+  const grid = document.getElementById(gridMap[category]);
+  if (!grid) {
+    el.textContent = `0 مادة`;
+    return;
+  }
+
+  const visibleCards = Array.from(grid.querySelectorAll(".course-card"))
+    .filter(card => card.style.display !== "none");
+
+  el.textContent = `${visibleCards.length} مادة`;
 }
+
 
 /* =========================
    Header text
@@ -192,8 +226,17 @@ function toggleSectionsVisibility(category) {
   const managementSection = document.getElementById("managementSection");
   const managementGrid = document.getElementById("MangamentCoursesGrid");
 
-  const show = (el) => { if (el) el.style.display = ""; };
-  const hide = (el) => { if (el) el.style.display = "none"; };
+ const show = (el) => {
+  if (!el) return;
+  el.style.removeProperty("display");
+  el.style.removeProperty("visibility");
+};
+
+const hide = (el) => {
+  if (!el) return;
+  el.style.setProperty("display", "none", "important");
+};
+  
 
   const allBlocks = [
     generalSection, generalGrid,
@@ -213,6 +256,9 @@ function toggleSectionsVisibility(category) {
 
   // Always show main header section (generalSection holds it in your HTML)
   show(generalSection);
+
+  // ✅ امنع تكرار العناوين: اخفِ كل عناوين الأقسام الفرعية دائمًا عند اختيار قسم واحد
+[csSection, isSection, islamicSection, managementSection].forEach(hide);
 
   // Show only selected grid (no extra headers under)
   if (category === "general") show(generalGrid);
