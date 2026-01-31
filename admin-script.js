@@ -882,3 +882,118 @@ async function initAdmin() {
     navMenu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => navMenu.classList.remove("open")));
   }
 }
+
+/* =========================
+   SECTIONS/SCHEDULES IMPORT
+   كل تخصص ينحفظ في مساره الخاص
+   schedules/{major} => [...sections]
+========================= */
+
+// معالجة اختيار الملف
+document.getElementById("sectionsFile")?.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    const label = document.getElementById("sectionsFileLabel");
+    if (label) {
+        label.textContent = file ? `ارفع ملف: ${file.name}` : "اختر ملف JSON";
+    }
+});
+
+// استيراد الجداول إلى Firebase
+document.getElementById("importSectionsBtn")?.addEventListener("click", async () => {
+    const fileInput = document.getElementById("sectionsFile");
+    const majorSelect = document.getElementById("sectionsMajor");
+    
+    const file = fileInput?.files?.[0];
+    const major = majorSelect?.value;
+    
+    if (!file) {
+        showAlert("يرجى اختيار ملف JSON!", "error");
+        return;
+    }
+    
+    if (!major) {
+        showAlert("يرجى اختيار التخصص!", "error");
+        return;
+    }
+    
+    try {
+        const text = await file.text();
+        const sections = JSON.parse(text);
+        
+        if (!Array.isArray(sections)) {
+            showAlert("الملف يجب أن يحتوي على مصفوفة من الشعب!", "error");
+            return;
+        }
+        
+        // حفظ في مسار التخصص
+        // schedules/general, schedules/cs, schedules/is
+        await set(ref(rtdb, `schedules/${major}`), sections);
+        
+        showAlert(`تم استيراد ${sections.length} شعبة لتخصص ${getMajorName(major)} بنجاح!`, "success");
+        
+        // Reset
+        fileInput.value = "";
+        document.getElementById("sectionsFileLabel").textContent = "اختر ملف JSON";
+        
+    } catch (err) {
+        console.error(err);
+        showAlert("فشل قراءة أو استيراد الملف!", "error");
+    }
+});
+
+// تحميل جداول تخصص معين
+async function loadSchedulesByMajor(major) {
+    const snap = await get(ref(rtdb, `schedules/${major}`));
+    return snap.exists() ? snap.val() : [];
+}
+
+// تحميل كل الجداول
+async function loadAllSchedules() {
+    const snap = await get(ref(rtdb, "schedules"));
+    return snap.exists() ? snap.val() : {};
+}
+
+// أسماء التخصصات
+function getMajorName(key) {
+    const names = {
+        general: "الإعداد العام",
+        cs: "علوم الحاسب",
+        is: "نظم المعلومات"
+    };
+    return names[key] || key;
+}
+
+// تصدير جداول تخصص معين
+window.exportSchedules = async function exportSchedules(major) {
+    const data = await loadSchedulesByMajor(major);
+    
+    if (!data.length) {
+        showAlert(`لا توجد جداول لتخصص ${getMajorName(major)}!`, "error");
+        return;
+    }
+    
+    const dataStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `schedules-${major}.json`;
+    link.click();
+    
+    URL.revokeObjectURL(url);
+    showAlert(`تم تصدير جداول ${getMajorName(major)} بنجاح!`);
+};
+
+// حذف جداول تخصص معين
+window.deleteSchedules = async function deleteSchedules(major) {
+    if (!confirm(`هل تريد حذف كل جداول ${getMajorName(major)}؟`)) return;
+    
+    try {
+        await set(ref(rtdb, `schedules/${major}`), null);
+        showAlert(`تم حذف جداول ${getMajorName(major)} بنجاح!`);
+    } catch (err) {
+        console.error(err);
+        showAlert("فشل الحذف!", "error");
+    }
+};

@@ -8,26 +8,33 @@
   <link rel="stylesheet" href="schedule.css">
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container">
-      <div class="nav-brand">
-        <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-        <span class="brand-name"><a href="./index.html">UniCourse</a></span>
-      </div>
-      <ul class="nav-menu">
-        <li><a href="index.html" class="nav-link">المواد</a></li>
-        <li><a href="teachers.html" class="nav-link">أعضاء هيئة التدريس</a></li>
-        <li><a href="schedule.html" class="nav-link active">منشئ الجدول</a></li>
-        <li><a href="admin.html" class="nav-link admin-link">لوحة الإدارة</a></li>
-      </ul>
+    <nav class="navbar">
+  <div class="container">
+    <div class="nav-brand">
+      <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <span class="brand-name"><a href="./index.html">UniCourse</a></span>
     </div>
-  </nav>
+
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">المواد</a></li>
+      <li><a href="./teachers.html" class="nav-link">اعضاء هيئة التدريس</a></li>
+      <li><a href="schedule.html" class="nav-link active">منشئ الجدول</a></li>
+      <li><a href="development.html" class="nav-link">التطوير الذاتي</a></li>
+      <li>
+        <a href="admin.html" class="nav-link"
+           style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">
+          لوحة الإدارة
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
   <main class="schedule-main">
     <div class="container">
@@ -116,13 +123,51 @@
               <div class="option-group">
                 <label>أيام الراحة:</label>
                 <div class="days-checkboxes">
-                  <label><input type="checkbox" value="1"> الأحد</label>
-                  <label><input type="checkbox" value="2"> الاثنين</label>
-                  <label><input type="checkbox" value="3"> الثلاثاء</label>
-                  <label><input type="checkbox" value="4"> الأربعاء</label>
-                  <label><input type="checkbox" value="5"> الخميس</label>
-                </div>
+  <label class="day-chip">
+    <input type="checkbox" value="1">
+    <span>الأحد</span>
+  </label>
+
+  <label class="day-chip">
+    <input type="checkbox" value="2">
+    <span>الإثنين</span>
+  </label>
+
+  <label class="day-chip">
+    <input type="checkbox" value="3">
+    <span>الثلاثاء</span>
+  </label>
+
+  <label class="day-chip">
+    <input type="checkbox" value="4">
+    <span>الأربعاء</span>
+  </label>
+
+  <label class="day-chip">
+    <input type="checkbox" value="5">
+    <span>الخميس</span>
+  </label>
+</div>
+
               </div>
+
+              <div class="open-only-row">
+  <label class="toggle">
+    <input type="checkbox" id="openOnlyToggle" checked>
+    <span class="toggle-track"></span>
+  </label>
+
+  <div class="open-only-text">
+    <div class="open-only-title">
+      الشعب المفتوحة فقط
+      <span id="openOnlyStatus" class="open-only-badge">مفعل</span>
+    </div>
+    <div class="open-only-hint">
+      عند إيقافه سيتم توليد جداول قد تحتوي على شعب مغلقة  .
+    </div>
+  </div>
+</div>
+
             </div>
             <button id="generateBtn" class="btn-generate">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -217,6 +262,6 @@
     </div>
   </main>
 
-  <script type="module" src="schedule.js"></script>
+<script type="module" src="./schedule.js"></script>
 </body>
 </html>

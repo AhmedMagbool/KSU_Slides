@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التطوير الذاتي - UniCourse</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="development.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+  <div class="container">
+    <div class="nav-brand">
+      <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <span class="brand-name"><a href="./index.html">UniCourse</a></span>
+    </div>
+
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">المواد</a></li>
+      <li><a href="./teachers.html" class="nav-link">اعضاء هيئة التدريس</a></li>
+      <li><a href="schedule.html" class="nav-link">منشئ الجدول</a></li>
+      <li><a href="development.html" class="nav-link active">التطوير الذاتي</a></li>
+      <li>
+        <a href="admin.html" class="nav-link"
+           style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">
+          لوحة الإدارة
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero-title">خطة التطوير الذاتي</h1>
+      <p class="hero-subtitle">دورات ومصادر تعليمية مقترحة لكل مستوى دراسي</p>
+    </div>
+  </section>
+
+  <!-- Track Selection -->
+  <section class="track-selection">
+    <div class="container">
+      <div class="track-tabs">
+         <button class="track-tab" data-track="general">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+          <span>الإعداد العام</span>
+        </button>
+
+        <button class="track-tab" data-track="cs">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          <span>علوم الحاسب</span>
+        </button>
+        <button class="track-tab" data-track="is">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <span>نظم المعلومات</span>
+        </button>
+       
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <main class="content">
+    <div class="container">
+        <!-- General Track -->
+        <div class="track-content" id="track-general"></div>
+      <!-- CS Track -->
+<div class="track-content active" id="track-cs"></div>
+      <!-- IS Track -->
+      <div class="track-content" id="track-is"></div>
+
+
+    </div>
+  </main>
+
+<script type="module" src="development.js"></script>
+</body>
+</html>

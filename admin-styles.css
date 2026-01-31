@@ -557,3 +557,35 @@
     padding: 0.8rem 0.9rem;
   }
 }
+
+/* ===== Admin buttons scope fix ===== */
+.admin-main button,
+.admin-main .btn,
+.admin-main input[type="button"],
+.admin-main input[type="submit"],
+.admin-main input[type="reset"]{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--gradient-primary);
+  color: #fff;
+  font-weight: 700;
+  line-height: 1;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.admin-main button:hover,
+.admin-main .btn:hover,
+.admin-main input[type="submit"]:hover{
+  filter: brightness(1.05);
+}
+
+.admin-main button:active,
+.admin-main .btn:active{
+  transform: translateY(1px);
+}

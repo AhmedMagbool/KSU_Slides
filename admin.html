@@ -28,37 +28,148 @@
   </div>
 
   <div id="adminPanel" style="display:none;">
-    <nav class="navbar">
-      <div class="container">
-        <div class="nav-brand">
-          <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          </button>
+     <nav class="navbar">
+  <div class="container">
+    <div class="nav-brand">
+      <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <span class="brand-name"><a href="./index.html">UniCourse</a></span>
+    </div>
 
-          <span class="brand-name"><a href="./index.html">UniCourse</a></span>
-        </div>
-
-        <ul class="nav-menu">
-          <li><a href="index.html" class="nav-link">المواد</a></li>
-          <li><a href="./teachers.html" class="nav-link">اعضاء هيئة التدريس</a></li>
-          <!-- <li><a href="schedule.html" class="nav-link">منشئ الجدول</a></li> -->
-          <li><a href="admin.html" class="nav-link" style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">لوحة الإدارة</a></li>
-        </ul>
-      </div>
-    </nav>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">المواد</a></li>
+      <li><a href="./teachers.html" class="nav-link">اعضاء هيئة التدريس</a></li>
+      <li><a href="schedule.html" class="nav-link">منشئ الجدول</a></li>
+      <li><a href="development.html" class="nav-link">التطوير الذاتي</a></li>
+      <li>
+        <a href="admin.html" class="nav-link"
+           style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">
+          لوحة الإدارة
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
     <main class="admin-main">
       <div class="container">
         <div class="admin-header">
-          <h1>إدارة المواد والملفات والأساتذة</h1>
-          <p>أضف وعدّل المحتوى بسهولة (Realtime Database + Storage)</p>
+          <h1>إدارة المحتوى والدورات</h1>
+          <p>أضف وعدّل المواد والملفات والأساتذة والدورات التدريبية</p>
         </div>
 
         <div class="admin-content">
+
+  <!-- ====== DEVELOPMENT COURSES MANAGEMENT ====== -->
+  <div class="admin-card">
+  <div class="card-header">
+  <h2>إدارة دورات التطوير الذاتي</h2>
+  <div style="display:flex;gap:0.5rem;">
+    <a href="development.html" class="btn btn-secondary" style="text-decoration:none;">عرض صفحة الدورات</a>
+    <button onclick="deleteAllDevelopmentCourses()" class="btn" style="background:var(--danger);color:white;">حذف جميع الدورات</button>
+  </div>
+  </div>
+
+            <form id="addDevelopmentCourseForm" class="admin-form">
+              <div class="form-group has-select">
+                <label>التخصص</label>
+                <select id="devCourseMajor" required>
+                  <option value="">اختر التخصص</option>
+                  <option value="cs">علوم الحاسب</option>
+                  <option value="is">نظم المعلومات</option>
+                  <option value="general">إعداد عام</option>
+                </select>
+              </div>
+
+              <div class="form-group has-select">
+                <label>المستوى (من 3 إلى 8)</label>
+                <select id="devCourseLevel" required>
+                  <option value="">اختر المستوى</option>
+                  <option value="3">المستوى الثالث</option>
+                  <option value="4">المستوى الرابع</option>
+                  <option value="5">المستوى الخامس</option>
+                  <option value="6">المستوى السادس</option>
+                  <option value="7">المستوى السابع</option>
+                  <option value="8">المستوى الثامن</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>اسم الدورة</label>
+                <input type="text" id="devCourseName" placeholder="مثال: Introduction to Python Programming" required>
+              </div>
+
+              <div class="form-group">
+                <label>الوصف</label>
+                <textarea id="devCourseDescription" placeholder="وصف مختصر للدورة وفوائدها" rows="2"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>رابط الدورة</label>
+                <input type="url" id="devCourseUrl" placeholder="https://www.coursera.org/..." required>
+              </div>
+
+              <div class="form-group">
+                <label>المواد المرتبطة (مفصولة بفاصلة)</label>
+                <input type="text" id="devCourseRelatedCourses" placeholder="مثال: برمجة 1, هياكل البيانات, خوارزميات">
+                <small>أدخل أسماء المواد التي تفيد فيها هذه الدورة</small>
+              </div>
+
+              <div class="form-group">
+                <label>المنصة</label>
+                <input type="text" id="devCoursePlatform" placeholder="مثال: Coursera, Udemy, edX">
+              </div>
+
+              <button type="submit" class="btn btn-primary">إضافة الدورة</button>
+            </form>
+
+            <div class="files-section">
+              <h4>قائمة الدورات التدريبية</h4>
+              <div id="developmentCoursesList" class="courses-list"></div>
+            </div>
+          </div>
+
+          <!-- ====== SCHEDULE IMPORT ====== -->
+          <div class="admin-card">
+            <h2 class="card-title">استيراد جداول الشعب (مع الأوقات)</h2>
+            
+            <div class="form-group has-select">
+                <label>التخصص</label>
+                <select id="sectionsMajor">
+                    <option value="">اختر التخصص</option>
+                    <option value="general">مواد الإعداد العام</option>
+                    <option value="cs">علوم الحاسب</option>
+                    <option value="is">نظم المعلومات</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>ملف الجداول</label>
+                <input type="file" id="sectionsFile" accept=".json" style="display:none;">
+                <label for="sectionsFile" class="file-upload-label" style="cursor:pointer; display:block; padding:1rem; border:2px dashed var(--border); border-radius:0.75rem; text-align:center;">
+                    <span id="sectionsFileLabel">اختر ملف JSON</span>
+                </label>
+            </div>
+            
+            <button type="button" id="importSectionsBtn" class="btn btn-primary" style="width:100%;">
+                استيراد إلى Firebase
+            </button>
+            
+            <div style="margin-top:1.5rem; display:grid; gap:0.5rem;">
+                <h4 style="color:var(--text-secondary); margin-bottom:0.5rem;">إدارة الجداول المحفوظة:</h4>
+                
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <button class="btn btn-secondary" onclick="exportSchedules('general')">تصدير الإعداد العام</button>
+                    <button class="btn btn-secondary" onclick="exportSchedules('cs')">تصدير علوم الحاسب</button>
+                    <button class="btn btn-secondary" onclick="exportSchedules('is')">تصدير نظم المعلومات</button>
+                </div>
+            </div>
+          </div>
 
           <!-- ====== COURSES ====== -->
           <div class="admin-card">
@@ -139,10 +250,6 @@
                 <small>الصيغ: PDF, DOC, DOCX, PPT, PPTX, ZIP (مستحسن أقل من 10MB)</small>
               </div>
 
-              <div id="filesUploadStatus" style="display:none; margin-top:.75rem; padding:.75rem 1rem; border:1px solid var(--border); border-radius:10px; background: var(--surface); color: var(--text-secondary);">
-                جاهز للرفع…
-              </div>
-
               <button type="submit" class="btn btn-primary">رفع الملفات</button>
             </form>
           </div>
@@ -150,18 +257,11 @@
           <div class="admin-card">
             <div class="card-header">
               <h2>قائمة المواد الحالية</h2>
-              <button onclick="exportData()" class="btn btn-secondary">تصدير بيانات المواد</button>
-            
+              <div style="display:flex; gap:0.5rem;">
+                <button onclick="exportData()" class="btn btn-secondary">تصدير بيانات المواد</button>
+                <button onclick="importCoursesFromJSON()" class="btn btn-secondary">استيراد JSON</button>
+              </div>
             </div>
-            <!-- أضف هذا الزر بجانب زر تصدير البيانات -->
-<button onclick="importCoursesFromJSON()" class="btn btn-secondary" style="margin-right: 1rem;">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-    <polyline points="17 8 12 3 7 8"></polyline>
-    <line x1="12" y1="3" x2="12" y2="15"></line>
-  </svg>
-  استيراد JSON
-</button>
             <div id="coursesList" class="courses-list"></div>
           </div>
 
@@ -187,23 +287,15 @@
 
               <div class="form-group">
                 <label>تقييم الدكتور (من 100)</label>
-                <input
-                  type="number"
-                  id="teacherRating"
-                  placeholder="مثال: 87"
-                  min="0"
-                  max="100"
-                  step="1"
-                  required
-                >
+                <input type="number" id="teacherRating" placeholder="مثال: 87" min="0" max="100" step="1" required>
                 <small>0 = ضعيف جدًا، 100 = ممتاز</small>
               </div>
-              <div class="form-group">
-  <label>رابط التقييم في UniMake</label>
-  <input type="url" id="teacherUnimakeUrl" placeholder="مثال: https://unimake.com/....">
-  <small>هذا الرابط هو اللي ينفتح عند الضغط على نسبة التقييم في صفحة الدكاترة.</small>
-</div>
 
+              <div class="form-group">
+                <label>رابط التقييم في UniMake</label>
+                <input type="url" id="teacherUnimakeUrl" placeholder="مثال: https://unimake.com/....">
+                <small>هذا الرابط هو اللي ينفتح عند الضغط على نسبة التقييم في صفحة الدكاترة.</small>
+              </div>
 
               <div class="form-group">
                 <label>البريد الجامعي</label>
@@ -219,17 +311,16 @@
                 <label>رقم الدكتور</label>
                 <input type="text" id="teacherPhone" placeholder="مثال: 011xxxxxxx" required>
               </div>
+
               <div class="form-group">
-                  <label>الساعات المكتبية</label>
-                   <input type="text" id="teacherOfficeHours" placeholder="مثال: الأحد والثلاثاء 10-12">
-            </div>
+                <label>الساعات المكتبية</label>
+                <input type="text" id="teacherOfficeHours" placeholder="مثال: الأحد والثلاثاء 10-12">
+              </div>
+
               <div class="form-group">
                 <label>صورة الدكتور (اختياري)</label>
                 <input type="text" id="teacherPhotoUrl" placeholder="رابط صورة (اختياري)">
-
-                <small style="margin-top:.35rem;">
-                  أو ارفع صورة صغيرة (بدون Storage). الأفضل: صورة أقل من 300KB.
-                </small>
+                <small style="margin-top:.35rem;">أو ارفع صورة صغيرة (بدون Storage). الأفضل: صورة أقل من 300KB.</small>
 
                 <div class="file-upload-wrapper" style="margin-top:.75rem;">
                   <input type="file" id="teacherPhotoFile" accept="image/*">
@@ -250,12 +341,14 @@
               <div id="teachersList" class="courses-list"></div>
             </div>
           </div>
-
         </div>
       </div>
     </main>
   </div>
 
   <script type="module" src="admin-script.js"></script>
+  <script type="module" src="admin-schedule-import.js"></script>
+  <script type="module" src="admin-development.js"></script>
+
 </body>
 </html>
