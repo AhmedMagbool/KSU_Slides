@@ -80,15 +80,18 @@
                 <label>التخصص</label>
                 <select id="devCourseMajor" required>
                   <option value="">اختر التخصص</option>
+                  <option value="general">إعداد عام</option>
                   <option value="cs">علوم الحاسب</option>
                   <option value="is">نظم المعلومات</option>
-                  <option value="general">إعداد عام</option>
+                  <option value="cyber">مسار أساسيات الأمن السيبراني</option>
+                  <option value="AI">مسار علم البيانات والذكاء الاصطناعي</option>
+
                 </select>
               </div>
 
-              <div class="form-group has-select">
+              <div class="form-group has-select" id="devLevelGroup">
                 <label>المستوى (من 3 إلى 8)</label>
-                <select id="devCourseLevel" required>
+                <select id="devCourseLevel">
                   <option value="">اختر المستوى</option>
                   <option value="3">المستوى الثالث</option>
                   <option value="4">المستوى الرابع</option>
@@ -114,7 +117,7 @@
                 <input type="url" id="devCourseUrl" placeholder="https://www.coursera.org/..." required>
               </div>
 
-              <div class="form-group">
+              <div class="form-group" id="devRelatedGroup">
                 <label>المواد المرتبطة (مفصولة بفاصلة)</label>
                 <input type="text" id="devCourseRelatedCourses" placeholder="مثال: برمجة 1, هياكل البيانات, خوارزميات">
                 <small>أدخل أسماء المواد التي تفيد فيها هذه الدورة</small>

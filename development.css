@@ -108,32 +108,7 @@ body {
   flex-wrap: wrap;
 }
 
-.track-tab {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
-  background: var(--bg-card);
-  border: 2px solid var(--border);
-  border-radius: 0.75rem;
-  color: var(--text-secondary);
-  font-size: 1.125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
 
-.track-tab:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--accent);
-  transform: translateY(-2px);
-}
-
-.track-tab.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
-}
 
 .track-tab svg {
   width: 24px;
@@ -171,14 +146,6 @@ body {
   font-weight: 700;
 }
 
-.level-badge {
-  background: var(--tag-bg);
-  color: var(--tag-text);
-  padding: 0.5rem 1rem;
-  border-radius: 2rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
 
 /* Courses Grid */
 .courses-grid {
@@ -187,22 +154,7 @@ body {
   gap: 1.5rem;
 }
 
-.course-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  transition: all 0.3s;
-  display: flex;
-  flex-direction: column;
-}
 
-.course-card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--accent);
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
-}
 
 .course-header {
   display: flex;
@@ -257,8 +209,8 @@ body {
 }
 
 .tag {
-  background: var(--tag-bg);
-  color: var(--tag-text);
+  background: rgba(102, 126, 234, 0.12);
+  color: var(--primary);
   padding: 0.25rem 0.75rem;
   border-radius: 0.375rem;
   font-size: 0.8125rem;
@@ -404,6 +356,8 @@ body {
 .level-badge {
   background: rgba(102, 126, 234, 0.12);
   color: var(--primary);
+  border-radius: 999px !important;
+  padding: .45rem .9rem; /* اختياري لتحسين الشكل */
 }
 
 /* Cards */
@@ -411,24 +365,31 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
 }
-.course-card:hover {
-  border-color: var(--primary);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
-}
+
 .course-platform {
   background: rgba(240, 147, 251, 0.12);
   color: var(--accent);
 }
-.tag {
-  background: rgba(102, 126, 234, 0.12);
-  color: var(--primary);
-}
-.course-link {
+
+.course-link{
   background: var(--gradient-primary);
+  margin-top: auto;
 }
-.course-link:hover {
+.course-link:hover{
   background: linear-gradient(135deg, #5568d3 0%, #6540a2 100%);
 }
+.course-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display:flex;
+  flex-direction:column;
+}
+.courses-grid{
+  align-items: stretch;
+}
+
 
 /* Mobile: تبقي نفس استايل الموقع بدون كسر */
 @media (max-width: 768px) {
@@ -444,4 +405,31 @@ body {
     align-items: flex-start;
     gap: 1rem;
   }
+}
+
+
+.track-tab{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  padding: 1rem 2rem;
+  border-radius: .75rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor:pointer;
+  transition: all .25s;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.track-tab:hover{
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.track-tab.active{
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color:#fff;
 }

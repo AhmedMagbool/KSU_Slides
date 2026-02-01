@@ -24,7 +24,7 @@ document.getElementById("track-general")?.classList.add("active");
 
 async function loadCourses() {
   try {
-    const tracks = ["cs", "is", "general"];
+    const tracks = ["cs", "is", "general","cyber","AI"];
     
     for (const track of tracks) {
       const trackRef = ref(rtdb, `developmentCourses/${track}`);
@@ -48,37 +48,74 @@ async function loadCourses() {
       }
       
       // بداية من المستوى الثالث (3-8)
-      const levels = [3, 4, 5, 6, 7, 8];
-      let html = "";
       
-      for (const level of levels) {
-        const coursesArray = data[level];
-        
-        if (!coursesArray || !Array.isArray(coursesArray) || coursesArray.length === 0) continue;
-        
-        html += `
-          <div class="level-section">
-            <div class="level-header">
-              <h2>المستوى ${getLevelName(level)}</h2>
-              <span class="level-badge">${coursesArray.length} ${coursesArray.length === 1 ? 'دورة' : 'دورات'}</span>
-            </div>
-            <div class="courses-grid">
-              ${coursesArray.map(course => renderCourseCard(course)).join("")}
-            </div>
-          </div>
-        `;
-      }
       
-      container.innerHTML = html || `
-        <div class="empty-state">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <p>لا توجد دورات متاحة لهذا التخصص حالياً</p>
+   
+let html = "";
+
+// ✅ مسارات بدون مستويات (cyber/AI)
+if (track === "cyber" || track === "AI") {
+  const coursesArray = data.all; // هنا التخزين الجديد
+
+  if (Array.isArray(coursesArray) && coursesArray.length) {
+    html = `
+      <div class="level-section">
+        <div class="level-header">
+          <h2>الدورات المقترحة</h2>
+          <span class="level-badge">${coursesArray.length} ${coursesArray.length === 1 ? "دورة" : "دورات"}</span>
         </div>
-      `;
+        <div class="courses-grid">
+          ${coursesArray.map(course => renderCourseCard(course)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html || `
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <p>لا توجد دورات متاحة لهذا التخصص حالياً</p>
+    </div>
+  `;
+  continue; // مهم عشان ما يكمل على مستويات 3..8
+}
+
+// ✅ باقي التخصصات بمستويات 3..8
+const levels = [3, 4, 5, 6, 7, 8];
+
+for (const level of levels) {
+  const coursesArray = data[level];
+  if (!coursesArray || !Array.isArray(coursesArray) || coursesArray.length === 0) continue;
+
+  html += `
+    <div class="level-section">
+      <div class="level-header">
+        <h2>المستوى ${getLevelName(level)}</h2>
+        <span class="level-badge">${coursesArray.length} ${coursesArray.length === 1 ? 'دورة' : 'دورات'}</span>
+      </div>
+      <div class="courses-grid">
+        ${coursesArray.map(course => renderCourseCard(course)).join("")}
+      </div>
+    </div>
+  `;
+}
+
+container.innerHTML = html || `
+  <div class="empty-state">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <p>لا توجد دورات متاحة لهذا التخصص حالياً</p>
+  </div>
+`;
+
+
     }
   } catch (error) {
     console.error("Error loading courses:", error);

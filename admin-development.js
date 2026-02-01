@@ -28,9 +28,11 @@ function displayDevelopmentCourses() {
   }
 
   const majorNames = {
+    general: "إعداد عام",
     cs: "علوم الحاسب",
     is: "نظم المعلومات",
-    general: "إعداد عام"
+    cyber:"مسار أساسيات الأمن السيبراني",
+    AI:"مسار علم البيانات والذكاء الاصطناعي"
   };
 
   container.innerHTML = courses
@@ -81,8 +83,15 @@ document.getElementById("addDevelopmentCourseForm")?.addEventListener("submit", 
   const relatedCourses = document.getElementById("devCourseRelatedCourses").value.trim();
   const platform = document.getElementById("devCoursePlatform").value.trim();
 
-  if (!major || !level || !title || !url) {
+  const isTrack = (major === "cyber" || major === "AI");
+
+  if (!major || !title || !url) {
     alert("يرجى ملء جميع الحقول المطلوبة!");
+    return;
+  }
+
+  if (!isTrack && !level) {
+    alert("يرجى اختيار المستوى!");
     return;
   }
 
@@ -91,20 +100,18 @@ document.getElementById("addDevelopmentCourseForm")?.addEventListener("submit", 
       title,
       description,
       url,
-      relatedCourses,
+      relatedCourses: isTrack ? "" : relatedCourses, // اختياري: تفريغها للمسارات
       platform,
       addedAt: Date.now()
     };
 
-    // احصل على الدورات الحالية للمستوى
-    const levelRef = ref(rtdb, `developmentCourses/${major}/${level}`);
+    const bucket = isTrack ? "all" : level; 
+    const levelRef = ref(rtdb, `developmentCourses/${major}/${bucket}`);
+
     const snap = await get(levelRef);
     const existingCourses = snap.exists() ? snap.val() : [];
 
-    // أضف الدورة الجديدة
     existingCourses.push(courseData);
-
-    // احفظ
     await set(levelRef, existingCourses);
 
     alert("تم إضافة الدورة بنجاح!");
@@ -115,6 +122,7 @@ document.getElementById("addDevelopmentCourseForm")?.addEventListener("submit", 
     alert("فشل إضافة الدورة!");
   }
 });
+
 
 window.deleteDevelopmentCourse = async function(major, level, index) {
   if (!confirm("هل أنت متأكد من حذف هذه الدورة؟")) return;
@@ -159,3 +167,63 @@ window.deleteAllDevelopmentCourses = async function() {
 if (sessionStorage.getItem("adminLoggedIn") === "true") {
   loadDevelopmentCourses();
 }
+
+function syncDevCourseFieldsByMajor() {
+  const majorEl = document.getElementById("devCourseMajor");
+  const levelEl = document.getElementById("devCourseLevel");
+  const relatedEl = document.getElementById("devCourseRelatedCourses");
+  const levelGroup = document.getElementById("devLevelGroup");
+  const relatedGroup = document.getElementById("devRelatedGroup");
+  if (!majorEl || !levelEl || !relatedEl || !levelGroup || !relatedGroup) return;
+
+  const major = majorEl.value;
+  const isGeneralTrack = (major === "cyber" || major === "AI");
+
+  levelGroup.style.display = isGeneralTrack ? "none" : "";
+  relatedGroup.style.display = isGeneralTrack ? "none" : "";
+
+  levelEl.required = !isGeneralTrack;
+
+  if (isGeneralTrack) {
+    levelEl.value = "";
+    relatedEl.value = "";
+  }
+}
+
+syncDevCourseFieldsByMajor();
+document.getElementById("devCourseMajor")?.addEventListener("change", syncDevCourseFieldsByMajor);
+
+const majorSelect = document.getElementById("devCourseMajor");
+const levelSelect = document.getElementById("devCourseLevel");
+const relatedInput = document.getElementById("devCourseRelatedCourses");
+
+// هذا هو الديف اللي لفّيت فيه حقول المستوى + المواد المرتبطة (الخيار 1)
+const academicFieldsWrap = document.getElementById("devAcademicFields");
+
+function toggleAcademicFields() {
+  const major = majorSelect.value;
+  const isTrack = (major === "cyber" || major === "AI");
+
+  if (isTrack) {
+    // اخفاء + تعطيل + إزالة required
+    academicFieldsWrap.style.display = "none";
+
+    levelSelect.required = false;
+    levelSelect.disabled = true;
+    levelSelect.value = "";
+
+    relatedInput.disabled = true;
+    relatedInput.value = "";
+  } else {
+    // إظهار + تفعيل + إعادة required
+    academicFieldsWrap.style.display = "";
+
+    levelSelect.disabled = false;
+    levelSelect.required = true;
+
+    relatedInput.disabled = false;
+  }
+}
+
+majorSelect.addEventListener("change", toggleAcademicFields);
+toggleAcademicFields(); // تشغيلها أول ما تفتح الصفحة
