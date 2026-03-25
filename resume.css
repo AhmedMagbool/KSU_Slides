@@ -1,0 +1,795 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+
+/* ===== Variables - Matching Site Theme ===== */
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-card: #1a1f2e;
+  --bg-card-hover: #222839;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --border: #374151;
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --surface: rgba(30, 41, 59, 0.5);
+  --surface-light: rgba(51, 65, 85, 0.5);
+  --primary: #667eea;
+  --primary-dark: #5568d3;
+  --secondary: #764ba2;
+  --accent: #f093fb;
+  --background: #0f172a;
+  --surface: #1e293b;
+  --surface-light: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border: #334155;
+  --success: #10b981;
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-card: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.navbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-name a {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--primary);
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+}
+
+/* ===== Hero Section ===== */
+.hero {
+  padding: 3rem 0 2rem;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+}
+
+.hero-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Language Toggle ===== */
+.language-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  padding: 0.375rem;
+  border-radius: 0.75rem;
+  width: fit-content;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+}
+
+.lang-btn {
+  padding: 0.625rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Cairo', sans-serif;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.lang-btn.active {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.lang-btn:hover:not(.active) {
+  color: var(--text-primary);
+}
+
+/* ===== Main Layout ===== */
+.resume-main {
+  padding: 2rem 0 4rem;
+}
+
+.resume-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* ===== Form Panel ===== */
+.form-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.form-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-card-header svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.form-card-header h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  flex: 1;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: 'Cairo', sans-serif;
+  transition: all 0.3s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.form-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.form-input.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-hint {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+/* ===== Dynamic Items ===== */
+.dynamic-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.dynamic-item-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.dynamic-item-row.three-cols {
+  grid-template-columns: 1fr 1fr 1fr auto;
+}
+
+.btn-remove {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 0.5rem;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-remove:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+}
+
+.btn-add {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 0.5rem;
+  color: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: var(--accent);
+}
+
+/* ===== Form Actions ===== */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.btn-primary {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 0.75rem;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
+}
+
+/* ===== Preview Panel ===== */
+.preview-panel {
+  position: sticky;
+  top: 100px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.preview-header h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.preview-wrapper {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+  padding: 1rem;
+  overflow: auto;
+  max-height: 85vh;
+}
+
+/* ===== Resume Preview (ATS Style - Single Column like PDF) ===== */
+.resume-preview {
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 2rem 2.5rem;
+  border-radius: 0.5rem;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  font-size: 10pt;
+  line-height: 1.5;
+  min-height: 700px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  direction: ltr;
+  text-align: left;
+}
+
+/* Resume Header */
+.cv-header {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #333;
+}
+
+.cv-name {
+  font-size: 32pt;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  margin-bottom: 0.25rem;
+  color: #1a1a1a;
+}
+
+.cv-job-title {
+  font-size: 8pt;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.cv-contact {
+  font-size: 9pt;
+  font-style: normal;
+  color: #333;
+  margin: 0;
+  line-height: 1.6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cv-contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cv-contact-item a {
+  color: #333;
+  text-decoration: none;
+}
+
+.cv-contact-item a:hover {
+  text-decoration: underline;
+}
+
+.cv-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.cv-separator {
+  color: #999;
+  margin: 0 0.25rem;
+}
+
+/* Resume Body - Single Column */
+.cv-body {
+  margin-top: 1rem;
+}
+
+/* CV Sections */
+.cv-section {
+  margin-bottom: 1rem;
+}
+
+.cv-section-title {
+  font-size: 11pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #333;
+}
+
+/* Profile/Summary */
+.cv-summary {
+  font-size: 9pt;
+  line-height: 1.6;
+  text-align: justify;
+  color: #333;
+}
+
+/* Education Item */
+.cv-edu-item {
+  margin-bottom: 0.5rem;
+}
+
+.cv-edu-degree {
+  font-size: 9pt;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.cv-edu-school {
+  font-size: 9pt;
+  color: #333;
+  text-decoration: underline;
+}
+
+/* Experience Item */
+.cv-exp-item {
+  margin-bottom: 1rem;
+}
+
+.cv-exp-header {
+  margin-bottom: 0.25rem;
+}
+
+.cv-exp-company {
+  font-size: 9pt;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.cv-exp-title {
+  font-size: 9pt;
+  color: #333;
+}
+
+.cv-exp-desc {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.cv-exp-desc li {
+  font-size: 9pt;
+  color: #333;
+  margin-bottom: 0.15rem;
+  line-height: 1.5;
+}
+
+/* Skills List */
+.cv-skills-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cv-skills-list li {
+  font-size: 9pt;
+  margin-bottom: 0.4rem;
+  line-height: 1.5;
+}
+
+.cv-skills-list li strong {
+  font-weight: 600;
+}
+
+/* Languages */
+.cv-languages-inline {
+  font-size: 9pt;
+}
+
+.cv-lang-inline {
+  display: inline;
+}
+
+.cv-lang-inline:not(:last-child)::after {
+  content: " | ";
+}
+
+.cv-languages-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cv-languages-list li {
+  font-size: 9pt;
+  margin-bottom: 0.25rem;
+}
+
+/* Certifications */
+.cv-cert-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cv-cert-list li {
+  font-size: 9pt;
+  margin-bottom: 0.15rem;
+  color: #333;
+}
+
+/* ===== RTL Support for Arabic CV ===== */
+.resume-preview.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.resume-preview.rtl .cv-exp-desc {
+  padding-left: 0;
+  padding-right: 1.25rem;
+}
+
+.resume-preview.rtl .cv-contact span:not(:last-child)::after {
+  margin-left: 0;
+  margin-right: 0.75rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1200px) {
+  .resume-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+   .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0 0 14px 14px;
+    border-top: none;
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 999;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-menu.open {
+    display: flex;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  .nav-link.active::after {
+    display: none;
+  }
+
+  .nav-link.active {
+    background: rgba(102, 126, 234, 0.12);
+    color: var(--primary);
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dynamic-item-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .dynamic-item-row.three-cols {
+    grid-template-columns: 1fr auto;
+  }
+
+  .resume-preview {
+    padding: 1.5rem;
+  }
+}
+
+/* ===== Page Break Support ===== */
+.cv-section {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.cv-exp-item,
+.cv-edu-item {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* Hide everything except resume */
+  .navbar,
+  .hero,
+  .form-panel,
+  .preview-header,
+  .language-toggle,
+  .form-actions {
+    display: none !important;
+  }
+
+  /* Reset containers */
+  main,
+  .resume-main,
+  .container,
+  .resume-layout {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .preview-panel {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: white !important;
+  }
+
+  .preview-wrapper {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: white !important;
+  }
+
+  .resume-preview {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0.5in 0.6in !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: white !important;
+    color: #1a1a1a !important;
+    font-family: 'Arial', 'Helvetica', sans-serif !important;
+    min-height: auto !important;
+  }
+
+  /* Ensure all CV content is visible */
+  .cv-header,
+  .cv-body,
+  .cv-section,
+  .cv-exp-item,
+  .cv-edu-item,
+  .cv-summary,
+  .cv-skills-list,
+  .cv-languages-list,
+  .cv-cert-list {
+    display: block !important;
+    background: white !important;
+    color: #1a1a1a !important;
+    page-break-inside: avoid !important;
+  }
+
+  .cv-exp-desc,
+  .cv-skills-list li,
+  .cv-languages-list li,
+  .cv-cert-list li {
+    color: #1a1a1a !important;
+  }
+}
+

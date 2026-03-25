@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منشئ السيرة الذاتية | UniCourse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="resume.css">
+</head>
+<body>
+  <!-- Navbar -->
+   <nav class="navbar">
+  <div class="container">
+    <div class="nav-brand">
+      <button class="nav-toggle" id="navToggle" aria-label="فتح القائمة">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <span class="brand-name"><a href="./index.html">UniCourse</a></span>
+    </div>
+
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">المواد</a></li>
+      <li><a href="./teachers.html" class="nav-link">اعضاء هيئة التدريس</a></li>
+      <li><a href="schedule.html" class="nav-link">منشئ الجدول</a></li>
+      <li><a href="development.html" class="nav-link ">التطوير الذاتي</a></li>
+      <li><a href="resume.html" class="nav-link active">منشئ السيرة الذاتية</a></li>
+      <li>
+        <a href="admin.html" class="nav-link"
+           style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 0.5rem 1rem; border-radius: 8px;">
+          لوحة الإدارة
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero-title">منشئ السيرة الذاتية</h1>
+      <p class="hero-subtitle">أنشئ سيرة ذاتية احترافية متوافقة مع نظام ATS</p>
+      
+      <!-- Language Toggle -->
+      <div class="language-toggle">
+        <button class="lang-btn active" data-lang="ar" onclick="setLanguage('ar')">العربية</button>
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="resume-main">
+    <div class="container">
+      <div class="resume-layout">
+        
+        <!-- Form Panel -->
+        <div class="form-panel">
+          <form id="resumeForm" class="resume-form" onsubmit="return false;">
+            
+            <!-- Personal Info -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <h3 data-i18n="personal">المعلومات الشخصية</h3>
+              </div>
+              <div class="form-grid">
+                <input type="text" id="fullName" class="form-input full-width" data-i18n-placeholder="name" placeholder="الاسم الكامل" oninput="updatePreview()">
+                <input type="text" id="jobTitle" class="form-input full-width" data-i18n-placeholder="job-title" placeholder="المسمى الوظيفي" oninput="updatePreview()">
+                <input type="email" id="email" class="form-input" data-i18n-placeholder="email" placeholder="البريد الإلكتروني" oninput="updatePreview()">
+                <input type="tel" id="phone" class="form-input" data-i18n-placeholder="phone" placeholder="رقم الجوال" oninput="updatePreview()">
+                <input type="url" id="linkedin" class="form-input" data-i18n-placeholder="linkedin" placeholder="رابط LinkedIn" oninput="updatePreview()">
+              </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <h3 data-i18n="summary">الملخص الشخصي</h3>
+              </div>
+              <textarea id="summary" class="form-input form-textarea" data-i18n-placeholder="summary-placeholder" placeholder="اكتب ملخصاً موجزاً عن نفسك ومهاراتك وأهدافك..." rows="4" oninput="updatePreview()"></textarea>
+            </div>
+
+            <!-- Education -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                  <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                </svg>
+                <h3 data-i18n="education">التعليم</h3>
+                <button type="button" class="btn-add" onclick="addEducation()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+              </div>
+              <div id="educationList"></div>
+            </div>
+
+            <!-- Experience -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                <h3 data-i18n="experience">الخبرات العملية</h3>
+                <button type="button" class="btn-add" onclick="addExperience()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+              </div>
+              <div id="experienceList"></div>
+            </div>
+
+            <!-- Skills -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <h3 data-i18n="skills">المهارات</h3>
+              </div>
+              <textarea id="skills" class="form-input form-textarea" data-i18n-placeholder="skills-placeholder" placeholder="أدخل كل فئة مهارات في سطر منفصل..." rows="4" oninput="updatePreview()"></textarea>
+              <p class="form-hint" data-i18n="skills-hint">أدخل كل فئة مهارات في سطر منفصل (مثال: Guest Experience: Customer discovery, feedback management)</p>
+            </div>
+
+            <!-- Languages -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="2" y1="12" x2="22" y2="12"></line>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <h3 data-i18n="languages">اللغات</h3>
+                <button type="button" class="btn-add" onclick="addLanguage()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+              </div>
+              <div id="languagesList"></div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="form-card">
+              <div class="form-card-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="8" r="7"></circle>
+                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                </svg>
+                <h3 data-i18n="certifications">الشهادات والإنجازات</h3>
+                <button type="button" class="btn-add" onclick="addCertification()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+              </div>
+              <div id="certificationsList"></div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+              <button type="button" class="btn-primary" onclick="printResume()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span data-i18n="download">تحميل PDF</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel">
+          <div class="preview-header">
+            <h3 data-i18n="preview-title">معاينة السيرة الذاتية</h3>
+          </div>
+          <div class="preview-wrapper">
+            <div id="resumePreview" class="resume-preview">
+              <!-- Resume will be rendered here -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="resume.js"></script>
+</body>
+</html>

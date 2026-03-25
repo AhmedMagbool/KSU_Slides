@@ -1,42 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
+:root {
+  --primary: #667eea;
+  --primary-dark: #5568d3;
+  --secondary: #764ba2;
+  --accent: #f093fb;
+  --background: #0f172a;
+  --surface: #1e293b;
+  --surface-light: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border: #334155;
+  --success: #10b981;
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-card: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
-/* :root {
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #111827;
-  --bg-card: #1a1f2e;
-  --bg-card-hover: #222839;
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --border: #374151;
-  --tag-bg: rgba(59, 130, 246, 0.1);
-  --tag-text: #60a5fa;
-} */
-
 body {
   font-family: "Cairo", sans-serif;
   background: var(--background);
   color: var(--text-primary);
   line-height: 1.6;
+    min-height: 100vh;
 }
 
 
 .container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
 /* Navigation */
 /* Navbar - match main site */
-.navbar{
+.navbar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   padding: 1rem 0;
@@ -46,35 +47,65 @@ body {
   backdrop-filter: blur(10px);
 }
 
-.nav-container{
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display:flex;
+.navbar .container {
+  display: flex;
   justify-content: space-between;
-  align-items:center;
+  align-items: center;
+  position: relative;
 }
 
-.nav-logo{
-  color: var(--text-primary);
-  text-decoration:none;
-  font-weight: 700;
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-name a {
   font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
 }
 
-.nav-links a{
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-link {
   color: var(--text-secondary);
-  text-decoration:none;
+  text-decoration: none;
   font-weight: 600;
-  transition: color .2s;
+  transition: color 0.3s;
+  padding: 0.5rem 0;
+  position: relative;
 }
 
-.nav-links a:hover,
-.nav-links a.active{
+.nav-link:hover,
+.nav-link.active {
   color: var(--primary);
 }
 
-
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+}
 /* Hero */
 .hero {
   padding: 4rem 0 2rem;
