@@ -3,6 +3,31 @@ import { rtdb, storage } from "./firebase-config.js";
 import { ref, get, set, push } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-storage.js";
 
+import { auth } from "./firebase-config.js";
+import { signInWithEmailAndPassword, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+const ADMIN_UID = "hbTE7gSRopQtYcftsViKnOqWQNp2";
+
+onAuthStateChanged(auth, (user) => {
+  const overlay = document.getElementById("loginOverlay");
+  if (!overlay) return;
+  overlay.style.display = (user && user.uid === ADMIN_UID) ? "none" : "flex";
+});
+
+document.getElementById("loginBtn")?.addEventListener("click", async () => {
+  const err = document.getElementById("loginErr");
+  err.textContent = "";
+  try {
+    await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("loginEmail").value.trim(),
+      document.getElementById("loginPass").value
+    );
+  } catch (e) {
+    err.textContent = "بيانات الدخول غير صحيحة";
+  }
+});
 const ADMIN_PASSWORD = "445170340";
 
 /* =========================
