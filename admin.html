@@ -7,6 +7,25 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="admin-styles.css">
 </head>
+  <div id="loginOverlay" style="position:fixed;inset:0;background:#0f1424;display:flex;
+     align-items:center;justify-content:center;z-index:9999;">
+  <div style="background:#1a2035;padding:32px;border-radius:16px;width:320px;
+       font-family:Cairo,sans-serif;color:#fff;" dir="rtl">
+    <h2 style="margin:0 0 20px;text-align:center;">تسجيل دخول المدير</h2>
+    <input id="loginEmail" type="email" placeholder="البريد الإلكتروني"
+      style="width:100%;padding:12px;margin-bottom:12px;border-radius:8px;
+             border:1px solid #333;background:#0f1424;color:#fff;">
+    <input id="loginPass" type="password" placeholder="كلمة المرور"
+      style="width:100%;padding:12px;margin-bottom:16px;border-radius:8px;
+             border:1px solid #333;background:#0f1424;color:#fff;">
+    <button id="loginBtn"
+      style="width:100%;padding:12px;border:0;border-radius:8px;cursor:pointer;
+             background:linear-gradient(90deg,#6c7bf4,#9b5de5);color:#fff;
+             font-weight:700;">دخول</button>
+    <p id="loginErr" style="color:#ff6b6b;margin:12px 0 0;font-size:13px;
+       text-align:center;"></p>
+  </div>
+</div>
 <body>
   <div id="loginScreen" class="login-screen">
     <div class="login-box">
